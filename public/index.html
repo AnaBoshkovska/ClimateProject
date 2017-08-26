@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html ng-app="app">
+    <head>
+        <title>Traffic Project</title>
+    </head>
+    <body>
+        <h1>Climate change project</h1>
+
+        <div ng-controller="homeController" id="home">
+            <div id="map" style="width: 500px; height: 500px;"></div>
+        </div>
+        <div ng-controller="phantomController">
+
+        </div>
+
+        <script type="text/javascript" async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABhxqle8by-Swkpbi_m9OM0KOJ5DknrbA">
+        </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.min.js"></script>
+        <script src="app.js"></script>
+        <script src="controllers/MapController.js"></script>
+        <script src="services/TrafficService.js"></script>
+    </body>
+
+</html>

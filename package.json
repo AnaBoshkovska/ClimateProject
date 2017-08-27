@@ -5,6 +5,8 @@
   "main": "server.js",
   "dependencies": {
     "express": "^4.15.4",
+    "follow-redirects": "^1.2.4",
+    "mongoose": "^4.11.8",
     "phantomjs": "^2.1.7",
     "webshot": "^0.18.0"
   },

@@ -26,7 +26,10 @@ sensorService.getSensors().then(function (mes) {
         console.log(sensor);
         if(sensor.position !== null){
             var coors = sensor.position.split(',');
-            mapService.getMap(coors[0], coors[1], sensor.sensorId).then(function (success) {
+            var lat = parseFloat(coors[0]).toFixed(4);
+            var lng = parseFloat(coors[1]).toFixed(4);
+            console.log(lat + "," + lng);
+            mapService.getMap(lat, lng, sensor.sensorId).then(function (success) {
                 console.log(success);
             }, function (err) {
                 console.log(error);

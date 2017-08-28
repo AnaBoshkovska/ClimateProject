@@ -1,49 +1,39 @@
 var express = require('express');
 var app = express();
+var sensorService = require('./public/server/services/SensorService');
+var mapService = require('./public/server/services/MapService');
 
 app.use(express.static(__dirname + "/public/client"));
+
 app.listen(3000);
 console.log('Server started on port 3000');
 
-var options = {
 
-};
+// var sensors = sensor.getSensors();
+// console.log(sensors);
 
-var webshot = require('webshot');
-webshot('google.com', 'google.png', options, (err) => {
-    // screenshot now saved to google.pnghttps://www.google.mk/maps/@42.0144456,21.3966958,13z/data=!5m1!1e1?hl=en
+
+
+
+
+
+
+
+
+sensorService.getSensors().then(function (mes) {
+    for(var i = 0; i<mes.length; i++){
+        var sensor = mes[i];
+        console.log(sensor);
+        if(sensor.position !== null){
+            var coors = sensor.position.split(',');
+            mapService.getMap(coors[0], coors[1], sensor.sensorId).then(function (success) {
+                console.log(success);
+            }, function (err) {
+                console.log(error);
+            });
+        }
+    }
+}, function (error) {
+    console.log(error);
 });
 
-
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/climate');
-
-
-var mapModel = require('./public/server/models/Map');
-var Map = mapModel.Map;
-
-
-var map = new Map({
-    red: 3,
-    green: 2,
-    orange: 18,
-    brown: 30,
-    sensor_id: 2
-});
-
-map.save(function(err){
-   if(err) throw err;
-
-    console.log("Map saved");
-});
-
-Map.find({}, function(err, maps){
-    if(err) throw err;
-
-    console.log(maps);
-});
-
-
-var sensorService = require('./public/server/services/SensorService');
-
-sensorService.getSensors();

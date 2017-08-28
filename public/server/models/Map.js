@@ -6,7 +6,7 @@ var mapSchema = new Schema({
     green: Number,
     orange: Number,
     brown: Number,
-    sensor_id: Number,
+    sensor_id: String,
     created_at: Date
 });
 

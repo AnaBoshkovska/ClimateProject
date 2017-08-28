@@ -1,28 +1,31 @@
 //var https = require('https');
+var express = require('express')();
 var https = require('follow-redirects').https;
 
-
 exports.getSensors = function(){
-    var options = {
-        host: 'skopjepulse.mk',
-        path : '/rest/sensor',
-        jar: false,
-        headers:{
-            'Authorization': 'Basic' + new Buffer("Ana" + ':' + "climatechange").toString('base64')
-        }
-    };
-    var req = https.request(options, function(res) {
-        console.log('STATUS: ' + res.statusCode);
-        console.log('HEADERS: ' + JSON.stringify(res.headers));
-        res.setEncoding('utf8');
-        res.on('data', function (chunk) {
-            console.log('BODY: ' + chunk);
-        });
-    });
+    return new Promise(function(success, error){
+        var options = {
+            host: 'skopjepulse.mk',
+            path : '/rest/sensor',
+            jar: false,
+            method: 'GET',
+            headers:{
+                'Authorization': 'Basic ' + new Buffer("Ana" + ':' + "climatechange").toString('base64')
+            }
+        };
+        var req = https.request(options, function(res) {
 
-    req.on('error', function(e) {
-        console.log('problem with request: ' + e.message);
+            res.setEncoding('utf8');
+            res.on('data', function (chunk) {
+                success(JSON.parse(chunk));
+            });
+        });
+
+        req.on('error', function(e) {
+            error(e);
+        });
+
+        req.end();
     });
-    req.end();
 
 };

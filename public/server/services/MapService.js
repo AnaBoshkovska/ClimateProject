@@ -11,13 +11,18 @@ var mapModel = require('../models/Map');
 var Map = mapModel.Map;
 
 
-exports.getMap = function (lat, lng, sensorId) {
+exports.getMap = function (lat, lng, sensorId, i) {
     return new Promise(function (success, error) {
         var options = {};
-        var url = 'https://www.google.mk/maps/@' + lat + ',' + lng + ',15z/data=!5m1!1e1?hl=en';
-        webshot(url, 'google.png', options, (err) => {
+        var url = 'https://www.google.mk/maps/@' + lat + ',' + lng + '20z/data=!5m1!1e1?hl=en';
+        console.log(url);
+        webshot(url, 'google' + i + '.png', options, (err) => {
+            if(err){
+                console.log(err);
+                return;
+            }
             console.log('BEFORE JIMP');
-            Jimp.read("images/google.png").then(function (image) {
+            Jimp.read('google' + i + '.png').then(function (image) {
                 var green = 0;
                 var red = 0;
                 var orange = 0;

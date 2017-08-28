@@ -2,8 +2,6 @@ var express = require('express');
 var app = express();
 var sensorService = require('./public/server/services/SensorService');
 var mapService = require('./public/server/services/MapService');
-var fs = require('fs');
-var path = require('path');
 
 
 
@@ -27,10 +25,6 @@ console.log('Server started on port 3000');
 
 sensorService.getSensors().then(function (mes) {
     for(var i = 0; i<mes.length; i++){
-        fs.stat('google.png', function(err, exists) {
-            if(err === null)
-             fs.unlink('google.png');
-        });
         var sensor = mes[i];
         console.log(sensor);
         if(sensor.position !== null){
@@ -38,7 +32,7 @@ sensorService.getSensors().then(function (mes) {
             var lat = parseFloat(coors[0]).toFixed(4);
             var lng = parseFloat(coors[1]).toFixed(4);
             console.log(lat + "," + lng);
-            mapService.getMap(lat, lng, sensor.sensorId).then(function (success) {
+            mapService.getMap(lat, lng, sensor.sensorId, i).then(function (success) {
                 console.log(success);
             }, function (err) {
                 console.log(err);

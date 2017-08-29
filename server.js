@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var sensorService = require('./public/server/services/SensorService');
 var mapService = require('./public/server/services/MapService');
-
+var citiesService = require('./public/server/services/CitiesService');
 
 
 
@@ -23,23 +23,22 @@ console.log('Server started on port 3000');
 
 
 
-sensorService.getSensors().then(function (mes) {
-    for(var i = 0; i<mes.length; i++){
-        var sensor = mes[i];
-        console.log(sensor);
-        if(sensor.position !== null){
-            var coors = sensor.position.split(',');
-            var lat = parseFloat(coors[0]).toFixed(4);
-            var lng = parseFloat(coors[1]).toFixed(4);
-            console.log(lat + "," + lng);
-            mapService.getMap(lat, lng, sensor.sensorId, i).then(function (success) {
-                console.log(success);
-            }, function (err) {
-                console.log(err);
-            });
-        }
-    }
-}, function (error) {
-    console.log(error);
-});
-
+// sensorService.getSensors().then(function (mes) {
+//     for(var i = 0; i<mes.length; i++){
+//         var sensor = mes[i];
+//         console.log(sensor);
+//         if(sensor.position !== null){
+//             var coors = sensor.position.split(',');
+//             var lat = parseFloat(coors[0]).toFixed(4);
+//             var lng = parseFloat(coors[1]).toFixed(4);
+//             console.log(lat + "," + lng);
+//             mapService.getMap(lat, lng, sensor.sensorId, i).then(function (success) {
+//                 console.log(success);
+//             }, function (err) {
+//                 console.log(err);
+//             });
+//         }
+//     }
+// }, function (error) {
+//     console.log(error);
+// });

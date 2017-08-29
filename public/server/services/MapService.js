@@ -64,3 +64,7 @@ exports.getMap = function (lat, lng, sensorId, i) {
     });
 
 };
+
+exports.calculatePixelToMeter = function(lat, zoom){
+    return 156543.03392 * Math.cos(lat * Math.PI / 180) / Math.pow(2, zoom);
+}

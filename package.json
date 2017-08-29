@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
+    "all-the-cities": "^2.0.0",
     "express": "^4.15.4",
     "follow-redirects": "^1.2.4",
     "jimp": "^0.2.28",

@@ -10,6 +10,10 @@
             <div id="map" style="width: 500px; height: 500px;"></div>
         </div>
 
+        <div ng-controller="cityController">
+            <input type="text" ng-change="autocomplete()" ng-model="city"/>
+            {{city}}
+        </div>
 
         <script type="text/javascript" async defer
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABhxqle8by-Swkpbi_m9OM0KOJ5DknrbA">
@@ -17,6 +21,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.min.js"></script>
         <script src="app.js"></script>
         <script src="controllers/MapController.js"></script>
+        <script src="controllers/CityController.js"></script>
         <script src="services/TrafficService.js"></script>
     </body>
 

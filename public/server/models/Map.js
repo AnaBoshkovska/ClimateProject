@@ -7,6 +7,11 @@ var mapSchema = new Schema({
     orange: Number,
     brown: Number,
     sensor_id: String,
+    temperature: Number,
+    humidity: Number,
+    noise: Number,
+    pm10: Number,
+    pm25: Number,
     created_at: Date
 });
 

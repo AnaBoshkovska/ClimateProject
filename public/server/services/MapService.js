@@ -9,19 +9,52 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/climate');
 var mapModel = require('../models/Map');
 var Map = mapModel.Map;
+var sensorService = require('./SensorService');
 
 
 exports.getMap = function (lat, lng, sensorId, i) {
     return new Promise(function (success, error) {
         var options = {};
         var url = 'https://www.google.mk/maps/@' + lat + ',' + lng + '20z/data=!5m1!1e1?hl=en';
-        console.log(url);
+       // console.log(url);
+        var temperature = '';
+        var humidity = '';
+        var noise = '';
+        var pm10 = '';
+        var pm25 = '';
+        sensorService.getSensorData(sensorId).then(function(res){
+
+            for(var x=0; x<res.length; x++){
+                var typeObj = res[x];
+                console.log(typeObj);
+                var type = typeObj.type;
+                var value = typeObj.value;
+                if(type == 'temperature'){
+                    temperature = value;
+                }
+                else if(type == 'humidity'){
+                    humidity = value;
+                }
+                else if(type == 'noise'){
+                    noise = value;
+                }
+                else if(type == 'pm10'){
+                    pm10 = value;
+                }
+                else if(type == 'pm25'){
+                    pm25 = value;
+                }
+            }
+
+        }),function (error) {
+            console.log(error);
+        };
         webshot(url, 'google' + i + '.png', options, (err) => {
             if(err){
                 console.log(err);
                 return;
             }
-            console.log('BEFORE JIMP');
+            //console.log('BEFORE JIMP');
             Jimp.read('google' + i + '.png').then(function (image) {
                 var green = 0;
                 var red = 0;
@@ -47,9 +80,13 @@ exports.getMap = function (lat, lng, sensorId, i) {
                     green: green,
                     orange: orange,
                     brown: brown,
-                    sensor_id: sensorId
+                    sensor_id: sensorId,
+                    temperature: temperature,
+                    humidity: humidity,
+                    noise: noise,
+                    pm10: pm10,
+                    pm25: pm25
                 });
-
                 map.save(function (err) {
 
                     if (err) error(err);

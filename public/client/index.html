@@ -2,26 +2,22 @@
 <html ng-app="app">
     <head>
         <title>Traffic Project</title>
+        <link rel="stylesheet" href="resources/css/app.css">
+        <link rel="stylesheet" href="resources/bower_components/angular-material/angular-material.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     </head>
     <body>
-        <h1>Climate change project</h1>
+        <div ng-view></div>
 
-        <div ng-controller="homeController" id="home">
-            <div id="map" style="width: 500px; height: 500px;"></div>
-        </div>
-
-        <div ng-controller="cityController">
-            <input type="text" ng-change="autocomplete()" ng-model="city"/>
-            {{city}}
-        </div>
-
-        <script type="text/javascript" async defer
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABhxqle8by-Swkpbi_m9OM0KOJ5DknrbA">
-        </script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.min.js"></script>
+        <script src="resources/bower_components/jquery/dist/jquery.js"></script>
+        <script src="resources/bower_components/angular/angular.min.js"></script>
+        <script src="resources/bower_components/angular-route/angular-route.min.js"></script>
+        <script src="resources/bower_components/angular-aria/angular-aria.min.js"></script>
+        <script src="resources/bower_components/angular-animate/angular-animate.min.js"></script>
+        <script src="resources/bower_components/angular-material/angular-material.min.js"></script>
         <script src="app.js"></script>
         <script src="controllers/MapController.js"></script>
-        <script src="controllers/CityController.js"></script>
         <script src="services/TrafficService.js"></script>
     </body>
 

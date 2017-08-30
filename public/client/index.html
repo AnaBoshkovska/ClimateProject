@@ -19,6 +19,14 @@
         <script src="app.js"></script>
         <script src="controllers/MapController.js"></script>
         <script src="services/TrafficService.js"></script>
+        <script type="text/javascript">
+            function initMap() {
+                angular.element(document.getElementById('homeController')).scope().getTrafficLayer();
+            }
+        </script>
+        <script type="text/javascript" async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABhxqle8by-Swkpbi_m9OM0KOJ5DknrbA&callback=initMap">
+        </script>
     </body>
 
 </html>

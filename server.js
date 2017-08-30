@@ -3,6 +3,7 @@ var app = express();
 var sensorService = require('./public/server/services/SensorService');
 var mapService = require('./public/server/services/MapService');
 var citiesService = require('./public/server/services/CitiesService');
+var dataService = require('./public/server/services/DataService');
 
 
 
@@ -28,7 +29,7 @@ app.get('/cities', function(req, res, next){
 
 
 
-/*
+
 sensorService.getSensors().then(function (mes) {
     for(var i = 0; i<mes.length; i++){
         var sensor = mes[i];
@@ -48,4 +49,5 @@ sensorService.getSensors().then(function (mes) {
 }, function (error) {
     console.log(error);
 });
-*/
+
+dataService.getMapData();

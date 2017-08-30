@@ -15,8 +15,8 @@ var sensorService = require('./SensorService');
 exports.getMap = function (lat, lng, sensorId, i) {
     return new Promise(function (success, error) {
         var options = {};
-        var url = 'https://www.google.mk/maps/@' + lat + ',' + lng + '20z/data=!5m1!1e1?hl=en';
-       // console.log(url);
+        var url = 'https://www.google.com/maps/@' + lat + ',' + lng + ',15z/data=!5m1!1e1?hl=en'
+        console.log(url);
         var temperature = '';
         var humidity = '';
         var noise = '';
@@ -26,7 +26,6 @@ exports.getMap = function (lat, lng, sensorId, i) {
 
             for(var x=0; x<res.length; x++){
                 var typeObj = res[x];
-                console.log(typeObj);
                 var type = typeObj.type;
                 var value = typeObj.value;
                 if(type == 'temperature'){

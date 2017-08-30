@@ -10,8 +10,10 @@ exports.getCities = function(){
 }
 
 exports.getCity = function(name){
+    var regex="^" + name + "[A-Za-z]*";
+    regex = new RegExp(regex);
     return cities.filter(city=> {
-        return city.name.match(name);
+        return city.name.match(regex);
     })
 }
 exports.getCityAir = function(name){

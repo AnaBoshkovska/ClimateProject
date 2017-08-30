@@ -54,6 +54,7 @@ exports.getMap = function (lat, lng, sensorId, i) {
                 return;
             }
             //console.log('BEFORE JIMP');
+            var meters = exports.calculatePixelToMeter(lat, 15);
             Jimp.read('google' + i + '.png').then(function (image) {
                 var green = 0;
                 var red = 0;
@@ -74,6 +75,10 @@ exports.getMap = function (lat, lng, sensorId, i) {
                             brown++;
                     }
                 }
+                var area = red*meters;
+                var car = 5.25;
+                var numberOfCars = area/car;
+                console.log("Number of cars: "+i+":"+numberOfCars);
                 var map = new Map({
                     red: red,
                     green: green,
@@ -103,4 +108,4 @@ exports.getMap = function (lat, lng, sensorId, i) {
 
 exports.calculatePixelToMeter = function(lat, zoom){
     return 156543.03392 * Math.cos(lat * Math.PI / 180) / Math.pow(2, zoom);
-}
+};

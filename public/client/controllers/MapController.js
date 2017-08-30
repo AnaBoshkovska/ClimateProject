@@ -17,7 +17,7 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
     $scope.showProgress = false;
 
     $scope.getTrafficLayer = function(){
-        mapService.getTrafficLayer("map1");
+        mapService.getTrafficLayer("map");
     }
 
     $scope.$watch('city1', function (newVal, oldVal) {
@@ -27,6 +27,15 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
            mapService.getTrafficLayer("map1", $scope.lat, $scope.lng);
        }
     });
+
+    $scope.$watch('city2', function (newVal, oldVal) {
+        if(newVal !== null && newVal !== undefined) {
+            $scope.lat = newVal.lat;
+            $scope.lng = newVal.lon;
+            mapService.getTrafficLayer("map2", $scope.lat, $scope.lng);
+        }
+    });
+
     $scope.querySearch = function(query) {
         if(query.length >3){
             var deferred = $q.defer();

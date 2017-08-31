@@ -94,3 +94,18 @@ body {
 .subheader{
     text-align: center;
 }
+
+.progress-wrapper .text{
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    text-align: center;
+    width: 100%;
+    z-index: 1;
+    font-size:24px;
+}
+.progress-wrapper .size{
+    font-size: 50px;
+}

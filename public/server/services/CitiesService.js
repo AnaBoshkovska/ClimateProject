@@ -7,7 +7,7 @@ var http = require('http');
 
 exports.getCities = function(){
     return JSON.parse(cities);
-}
+};
 
 exports.getCity = function(name){
     var regex="^" + name + "[A-Za-z]*";
@@ -15,20 +15,39 @@ exports.getCity = function(name){
     return cities.filter(city=> {
         return city.name.match(regex);
     })
-}
-exports.getCityAir = function(name){
+};
+exports.getCityAir = function(name1, name2){
     return new Promise(function(success, error){
-        var options = {
+        var options1 = {
             host: 'api.waqi.info',
-            path : '/feed/' + name + '/?token=7e83e3074271538088636df7d52a08181fe5351c',
+            path : '/feed/' + name1 + '/?token=7e83e3074271538088636df7d52a08181fe5351c',
             jar: false,
             method: 'GET',
         };
-        var req = http.request(options, function(res) {
+        var options2 = {
+            host: 'api.waqi.info',
+            path : '/feed/' + name2 + '/?token=7e83e3074271538088636df7d52a08181fe5351c',
+            jar: false,
+            method: 'GET',
+        };
+        console.log(options2.path);
+        var req = http.request(options1, function(res) {
 
             res.setEncoding('utf8');
-            res.on('data', function (chunk) {
-                success(JSON.parse(chunk));
+            res.on('data', function (chunk1) {
+                var req2 = http.request(options2, function(res2) {
+                    res2.setEncoding('utf8');
+                    res2.on('data', function (chunk2) {
+                        var c1 = JSON.parse(chunk1);
+                        var c2 = JSON.parse(chunk2);
+                        success({"city1": c1, "city2": c2});
+                    });
+                });
+                req2.on('error', function(e) {
+                    error(e);
+                });
+
+                req2.end();
             });
         });
 
@@ -38,4 +57,4 @@ exports.getCityAir = function(name){
 
         req.end();
     });
-}
+};

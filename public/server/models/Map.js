@@ -12,6 +12,7 @@ var mapSchema = new Schema({
     noise: Number,
     pm10: Number,
     pm25: Number,
+    cars: Number,
     created_at: Date
 });
 

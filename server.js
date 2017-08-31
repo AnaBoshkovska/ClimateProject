@@ -19,11 +19,12 @@ console.log('Server started on port 3000');
 var r = citiesService.getCity('a');
 //console.log(r);
 
+/*
 app.get('/cities', function(req, res, next){
     var city = req.query.name;
     console.log(city);
     var r = citiesService.getCity(city);
-   res.json(r);
+    res.json(r);
 });
 
 
@@ -38,7 +39,7 @@ sensorService.getSensors().then(function (mes) {
             var coors = sensor.position.split(',');
             var lat = parseFloat(coors[0]).toFixed(4);
             var lng = parseFloat(coors[1]).toFixed(4);
-           // console.log(lat + "," + lng);
+            // console.log(lat + "," + lng);
             mapService.getMap(lat, lng, sensor.sensorId, i).then(function (success) {
                 console.log(success);
             }, function (err) {
@@ -50,4 +51,12 @@ sensorService.getSensors().then(function (mes) {
     console.log(error);
 });
 
-dataService.getMapData();
+dataService.getMapData();*/
+
+
+app.get('/pixels', function(req, res, next){
+    var lat = req.query.lat;
+    var lng = req.query.lng;
+    var pixels = mapService.getPixels(lat, lng);
+    res.json(pixels);
+});

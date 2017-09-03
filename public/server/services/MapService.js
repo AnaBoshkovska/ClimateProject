@@ -10,9 +10,13 @@ mongoose.connect('mongodb://localhost/climate');
 var mapModel = require('../models/Map');
 var Map = mapModel.Map;
 var sensorService = require('./SensorService');
-
+var fs = require('fs');
+var path = require('path');
+var rimraf = require('rimraf');
+var findRemove = require('find-remove');
 
 exports.getMap = function (lat, lng, sensorId, i) {
+
     return new Promise(function (success, error) {
         var options = {};
         var url = 'https://www.google.com/maps/@' + lat + ',' + lng + ',15z/data=!5m1!1e1?hl=en'
@@ -22,6 +26,27 @@ exports.getMap = function (lat, lng, sensorId, i) {
         var noise = '';
         var pm10 = '';
         var pm25 = '';
+        var uploadsDir  = __dirname+'/../../../images';
+        fs.readdir(uploadsDir, function(err, files) {
+            files.forEach(function(file, index) {
+                fs.stat(path.join(uploadsDir, file), function(err, stat) {
+                    var endTime, now;
+                    if (err) {
+                        return console.error(err);
+                    }
+                    now = new Date().getTime();
+                    endTime = new Date(stat.ctime).getTime() + 86400000;
+                    if (now > endTime) {
+                        return rimraf(path.join(uploadsDir, file), function(err) {
+                            if (err) {
+                                return console.error(err);
+                            }
+                            console.log('successfully deleted');
+                        });
+                    }
+                });
+            });
+        });
         sensorService.getSensorData(sensorId).then(function(res){
 
             for(var x=0; x<res.length; x++){
@@ -48,14 +73,17 @@ exports.getMap = function (lat, lng, sensorId, i) {
         }),function (error) {
             console.log(error);
         };
-        webshot(url, 'google' + i + '.png', options, (err) => {
+        var hour = new Date().getHours();
+        var minute = new Date().getMinutes();
+        var time = hour;
+        webshot(url, 'images/'+i+'google' + hour+'-'+minute+ '.png', options, (err) => {
             if(err){
                 console.log(err);
                 return;
             }
             //console.log('BEFORE JIMP');
             var meters = exports.calculatePixelToMeter(lat, 15);
-            Jimp.read('google' + i + '.png').then(function (image) {
+            Jimp.read('images/'+i+'google' + hour+'-'+minute+ '.png').then(function (image) {
                 var green = 0;
                 var red = 0;
                 var orange = 0;
@@ -78,7 +106,7 @@ exports.getMap = function (lat, lng, sensorId, i) {
                 var area = red*meters;
                 var car = 5.25;
                 var numberOfCars = area/car;
-                console.log("Number of cars: "+i+":"+numberOfCars);
+                // console.log("Number of cars: "+i+":"+numberOfCars);
                 var map = new Map({
                     red: red,
                     green: green,
@@ -151,10 +179,10 @@ exports.getPixels = function (lat, lng) {
                     brown: brown,
                     cars: numberOfCars
                 });
-               success(map);
+                success(map);
 
             }).catch(function (err) {
-               error(err);
+                error(err);
             });
         });
     });

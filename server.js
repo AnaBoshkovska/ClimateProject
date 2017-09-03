@@ -62,24 +62,24 @@ app.get('/citiesMap', function(req, res, next){
 
 
 
-// sensorService.getSensors().then(function (mes) {
-//     for(var i = 0; i<mes.length; i++){
-//         var sensor = mes[i];
-//         //console.log(sensor);
-//         if(sensor.position !== null){
-//             var coors = sensor.position.split(',');
-//             var lat = parseFloat(coors[0]).toFixed(4);
-//             var lng = parseFloat(coors[1]).toFixed(4);
-//             // console.log(lat + "," + lng);
-//             mapService.getMap(lat, lng, sensor.sensorId, i).then(function (success) {
-//                 console.log(success);
-//             }, function (err) {
-//                 console.log(err);
-//             });
-//         }
-//     }
-// }, function (error) {
-//     console.log(error);
-// });
+sensorService.getSensors().then(function (mes) {
+    for(var i = 0; i<mes.length; i++){
+        var sensor = mes[i];
+        //console.log(sensor);
+        if(sensor.position !== null && sensor.status == 'ACTIVE'){
+            var coors = sensor.position.split(',');
+            var lat = parseFloat(coors[0]).toFixed(4);
+            var lng = parseFloat(coors[1]).toFixed(4);
+            // console.log(lat + "," + lng);
+            mapService.getMap(lat, lng, sensor.sensorId, i).then(function (success) {
+                //console.log(success);
+            }, function (err) {
+                console.log(err);
+            });
+        }
+    }
+}, function (error) {
+    console.log(error);
+});
 
 //dataService.getMapData();

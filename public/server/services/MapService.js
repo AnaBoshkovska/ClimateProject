@@ -95,7 +95,7 @@ exports.getMap = function (lat, lng, sensorId, i) {
                         var rgba = Jimp.intToRGBA(hex);
                         if (rgba.r === 132 && rgba.g === 202 && rgba.b === 80)
                             green++;
-                        if (rgba.r === 241 && rgba.g === 124 && rgba.b === 0)
+                        if (rgba.r > 200 && rgba.r < 256 && rgba.g > 60 && rgba.g < 150 && rgba.b > -1 &&rgba.b <60)
                             orange++;
                         if (rgba.r === 230 && rgba.g === 0 && rgba.b === 0)
                             red++;

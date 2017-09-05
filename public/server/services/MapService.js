@@ -19,7 +19,8 @@ exports.getMap = function (lat, lng, sensorId, i) {
 
     return new Promise(function (success, error) {
         var options = {};
-        var url = 'https://www.google.com/maps/@' + lat + ',' + lng + ',15z/data=!5m1!1e1?hl=en'
+        var url = 'https://www.google.com/maps/@' + lat + ',' + lng + ',15z/data=!5m1!1e1?hl=en';
+        var urlSimple = 'https://www.google.com/maps/@' + lat + ',' + lng + ',15z';
         console.log(url);
         var temperature = '';
         var humidity = '';
@@ -81,54 +82,82 @@ exports.getMap = function (lat, lng, sensorId, i) {
                 console.log(err);
                 return;
             }
-            //console.log('BEFORE JIMP');
-            var meters = exports.calculatePixelToMeter(lat, 15);
-            Jimp.read('images/'+i+'google' + hour+'-'+minute+ '.png').then(function (image) {
-                var green = 0;
-                var red = 0;
-                var orange = 0;
-                var brown = 0;
-
-                for (var i = 0; i < image.bitmap.width; i++) {
-                    for (var j = 0; j < image.bitmap.height; j++) {
-                        var hex = image.getPixelColor(i, j);
-                        var rgba = Jimp.intToRGBA(hex);
-                        if (rgba.r === 132 && rgba.g === 202 && rgba.b === 80)
-                            green++;
-                        if (rgba.r > 200 && rgba.r < 256 && rgba.g > 60 && rgba.g < 150 && rgba.b > -1 &&rgba.b <60)
-                            orange++;
-                        if (rgba.r === 230 && rgba.g === 0 && rgba.b === 0)
-                            red++;
-                        if (rgba.r === 158 && rgba.g === 19 && rgba.b === 19)
-                            brown++;
-                    }
+            webshot(urlSimple, 'images/'+i+'simple' + hour+'-'+minute+ '.png', options, (err) => {
+                if(err){
+                    console.log(err);
+                    return;
                 }
-                var area = red*meters;
-                var car = 5.25;
-                var numberOfCars = area/car;
-                // console.log("Number of cars: "+i+":"+numberOfCars);
-                var map = new Map({
-                    red: red,
-                    green: green,
-                    orange: orange,
-                    brown: brown,
-                    sensor_id: sensorId,
-                    temperature: temperature,
-                    humidity: humidity,
-                    noise: noise,
-                    pm10: pm10,
-                    pm25: pm25
+                //console.log('BEFORE JIMP');
+                var meters = exports.calculatePixelToMeter(lat, 15);
+                Jimp.read('images/'+i+'google' + hour+'-'+minute+ '.png').then(function (image) {
+                    Jimp.read('images/' + i + 'simple' + hour + '-' + minute + '.png').then(function (simple) {
+                        var green = 0;
+                        var red = 0;
+                        var orange = 0;
+                        var brown = 0;
+                        for (var i = 0; i < image.bitmap.width; i++) {
+                            for (var j = 0; j < image.bitmap.height; j++) {
+                                var hex = image.getPixelColor(i, j);
+                                var rgba = Jimp.intToRGBA(hex);
+                                var dif = 0;
+                                dif = Math.abs(rgba.r - 140) + Math.abs(rgba.g - 210) + Math.abs(rgba.b - 90);
+                                if(dif<50){
+                                    green ++;
+                                    console.log('Green');
+                                    console.log(rgba);
+                                }
+                                dif = Math.abs(rgba.r - 240) + Math.abs(rgba.g - 140) + Math.abs(rgba.b - 30);
+                                if(dif<50){
+                                    orange ++;
+                                    console.log('Orange');
+                                    console.log(rgba);
+                                }
+                                dif = Math.abs(rgba.r - 240) + Math.abs(rgba.g - 15) + Math.abs(rgba.b - 15);
+                                if(dif<50){
+                                    red ++;
+                                    console.log('Red');
+                                    console.log(rgba);
+                                }
+                                dif = Math.abs(rgba.r - 158) + Math.abs(rgba.g - 25) + Math.abs(rgba.b - 25);
+                                if(dif<50){
+                                    brown ++;
+                                    console.log('Brown');
+                                    console.log(rgba);
+                                }
+
+                            }
+                        }
+                        var area = red*meters;
+                        var car = 5.25;
+                        var numberOfCars = area/car;
+                        // console.log("Number of cars: "+i+":"+numberOfCars);
+                        var map = new Map({
+                            red: red,
+                            green: green,
+                            orange: orange,
+                            brown: brown,
+                            sensor_id: sensorId,
+                            temperature: temperature,
+                            humidity: humidity,
+                            noise: noise,
+                            pm10: pm10,
+                            pm25: pm25
+                        });
+                        map.save(function (err) {
+
+                            if (err) error(err);
+                            success("Map saves");
+
+                        });
+
+                    }).catch(function(err){
+                        console.log(err);
+                    });
+                }).catch(function (err) {
+                    error(err);
                 });
-                map.save(function (err) {
-
-                    if (err) error(err);
-                    success("Map saves");
-
-                });
-
-            }).catch(function (err) {
-                error(err);
             });
+
         });
     });
 

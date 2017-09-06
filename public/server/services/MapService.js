@@ -82,15 +82,9 @@ exports.getMap = function (lat, lng, sensorId, i) {
                 console.log(err);
                 return;
             }
-            webshot(urlSimple, 'images/'+i+'simple' + hour+'-'+minute+ '.png', options, (err) => {
-                if(err){
-                    console.log(err);
-                    return;
-                }
                 //console.log('BEFORE JIMP');
                 var meters = exports.calculatePixelToMeter(lat, 15);
                 Jimp.read('images/'+i+'google' + hour+'-'+minute+ '.png').then(function (image) {
-                    Jimp.read('images/' + i + 'simple' + hour + '-' + minute + '.png').then(function (simple) {
                         var green = 0;
                         var red = 0;
                         var orange = 0;
@@ -150,14 +144,10 @@ exports.getMap = function (lat, lng, sensorId, i) {
 
                         });
 
-                    }).catch(function(err){
-                        console.log(err);
-                    });
+
                 }).catch(function (err) {
                     error(err);
                 });
-            });
-
         });
     });
 

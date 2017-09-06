@@ -163,7 +163,7 @@ exports.getPixels = function (lat, lng) {
         console.log(url);
 
 
-        webshot(url, 'city.png', options, (err) => {
+        webshot(url, 'city.png', options, function(err) {
             if(err){
                 reject(err);
             }

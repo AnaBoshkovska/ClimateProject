@@ -20,13 +20,13 @@ exports.getMap = function (lat, lng, sensorId, i) {
     return new Promise(function (success, error) {
         var options = {};
         var url = 'https://www.google.com/maps/@' + lat + ',' + lng + ',15z/data=!5m1!1e1?hl=en';
-        var urlSimple = 'https://www.google.com/maps/@' + lat + ',' + lng + ',15z';
         console.log(url);
         var temperature = '';
         var humidity = '';
         var noise = '';
         var pm10 = '';
         var pm25 = '';
+        var counter = i;
         var uploadsDir  = __dirname+'/../../../images';
         fs.readdir(uploadsDir, function(err, files) {
             files.forEach(function(file, index) {
@@ -77,7 +77,7 @@ exports.getMap = function (lat, lng, sensorId, i) {
         var hour = new Date().getHours();
         var minute = new Date().getMinutes();
         var time = hour;
-        webshot(url, 'images/'+i+'google' + hour+'-'+minute+ '.png', options, (err) => {
+        webshot(url, 'images/'+i+'google' + hour+'-'+minute+ '.png', options,function(err){
             if(err){
                 console.log(err);
                 return;
@@ -97,26 +97,26 @@ exports.getMap = function (lat, lng, sensorId, i) {
                                 dif = Math.abs(rgba.r - 140) + Math.abs(rgba.g - 210) + Math.abs(rgba.b - 90);
                                 if(dif<50){
                                     green ++;
-                                    console.log('Green');
-                                    console.log(rgba);
+                                   // console.log('Green');
+                                    //console.log(rgba);
                                 }
                                 dif = Math.abs(rgba.r - 240) + Math.abs(rgba.g - 140) + Math.abs(rgba.b - 30);
                                 if(dif<50){
                                     orange ++;
-                                    console.log('Orange');
-                                    console.log(rgba);
+                                    //console.log('Orange');
+                                    //console.log(rgba);
                                 }
                                 dif = Math.abs(rgba.r - 240) + Math.abs(rgba.g - 15) + Math.abs(rgba.b - 15);
                                 if(dif<50){
                                     red ++;
-                                    console.log('Red');
-                                    console.log(rgba);
+                                   // console.log('Red');
+                                    //console.log(rgba);
                                 }
                                 dif = Math.abs(rgba.r - 158) + Math.abs(rgba.g - 25) + Math.abs(rgba.b - 25);
                                 if(dif<50){
                                     brown ++;
-                                    console.log('Brown');
-                                    console.log(rgba);
+                                    //console.log('Brown');
+                                    //console.log(rgba);
                                 }
 
                             }
@@ -137,6 +137,7 @@ exports.getMap = function (lat, lng, sensorId, i) {
                             pm10: pm10,
                             pm25: pm25
                         });
+                        console.log("COUNTER: "+counter+": "+map);
                         map.save(function (err) {
 
                             if (err) error(err);
@@ -158,7 +159,7 @@ exports.calculatePixelToMeter = function(lat, zoom){
 exports.getPixels = function (lat, lng) {
     return new Promise(function (success, error) {
         var options = {};
-        var url = 'https://www.google.com/maps/@' + lat + ',' + lng + ',15z/data=!5m1!1e1?hl=en'
+        var url = 'https://www.google.com/maps/@' + lat + ',' + lng + ',15z/data=!5m1!1e1?hl=en';
         console.log(url);
 
 
@@ -179,7 +180,7 @@ exports.getPixels = function (lat, lng) {
                         var rgba = Jimp.intToRGBA(hex);
                         if (rgba.r === 132 && rgba.g === 202 && rgba.b === 80)
                             green++;
-                        if (rgba.r === 241 && rgba.g === 124 && rgba.b === 0)
+                        if (rgba.r > 200 && rgba.r < 256 && rgba.g > 60 && rgba.g < 150 && rgba.b > -1 &&rgba.b <60)
                             orange++;
                         if (rgba.r === 230 && rgba.g === 0 && rgba.b === 0)
                             red++;

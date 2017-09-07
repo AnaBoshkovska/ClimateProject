@@ -137,7 +137,8 @@ exports.getMap = function (lat, lng, sensorId, i) {
                             humidity: humidity,
                             noise: noise,
                             pm10: pm10,
-                            pm25: pm25
+                            pm25: pm25,
+                            created_at: new Date()
                         });
                         console.log("COUNTER: "+counter+": "+map);
                         map.save(function (err) {

@@ -60,12 +60,56 @@ app.get('/citiesMap', function(req, res, next){
     });
 });
 
+app.get('/sensors', function(req, res, next){
+    sensorService.getSensors().then(function(success){
+        res.json(success);
+    }, function(error){
+       res.render('error', {error: error});
+    });
+});
+
+app.get('/sensorData', function(req, res, next){
+    var lat = req.query.lat;
+    var lng = req.query.lng;
+    var id = req.query.id;
+    var i = req.query.i;
+    console.log(id);
+    mapService.getMap(lat, lng, id, i).then(function (success) {
+        //console.log(success);
+        res.json(success);
+    }, function (err) {
+        res.render('error', {error: error});
+    });
+})
+/*
+
+sensorService.getSensors().then(function (mes) {
+    for(var i = 0; i<mes.length; i++){
+        var sensor = mes[i];
+        //console.log(sensor);
+        if(sensor.position !== null && sensor.status == 'ACTIVE'){
+            var coors = sensor.position.split(',');
+            var lat = parseFloat(coors[0]).toFixed(4);
+            var lng = parseFloat(coors[1]).toFixed(4);
+            // console.log(lat + "," + lng);
+            mapService.getMap(lat, lng, sensor.sensorId, i).then(function (success) {
+                 //console.log(success);
+            }, function (err) {
+                console.log(err);
+            });
+        }
+    }
+}, function (error) {
+    console.log(error);
+});
+*/
+
 
 
 
 
 //dataService.getMapData();
-
+/*
 var cronJob = cron.job('0,15,30,45 * * * *', function(){
     console.log("Cron job completed");
     sensorService.getSensors().then(function (mes) {
@@ -89,4 +133,4 @@ var cronJob = cron.job('0,15,30,45 * * * *', function(){
     });
 
 });
-cronJob.start();
+cronJob.start();*/

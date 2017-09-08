@@ -10,23 +10,38 @@
     </div>
     <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs="always" id="showData">
         <md-tab label="AIR NOW">
+
             <md-content class="md-padding">
                 <div id="showMap" layout="column" layout-align="start center">
                     <div layout="row" layout-align="center start">
                         <div layout="column">
+                            <div id="mapa" style="width:700px; height:500px"></div>
                             <canvas hidden id="mapCanvas">
                             </canvas>
-                            <div id="map" style="width:700px; height:500px"></div>
                         </div>
 
                         <div layout="column" flex="30" flex-offset="5" layout-align="start center">
                             <p>The Google Traffic layer modify the base map layer to display current traffic conditions. These layers are available in select regions.</p>
                             <p>Traffic Layer adds real-time traffic information (where supported) to the map. Traffic information is refreshed frequently, but not instantly.
                                 Rapid consecutive requests for the same area are unlikely to yield different results.</p>
-                            <md-button ng-show="!showProgress" ng-click="getCanvas()">GET DATA</md-button>
+                            <md-button ng-show="!showProgress" ng-click="getData()">GET DATA</md-button>
                             <md-progress-circular ng-show="showProgress" md-mode="indeterminate"></md-progress-circular>
                         </div>
                     </div>
+                </div>
+                <div layout="row" layout-wrap>
+                    <div flex="10"></div>
+                    <div flex="40">
+                        <canvas id="doughnut" class="chart chart-doughnut"
+                                chart-data="data" chart-labels="labels" chart-colors="colors">
+                        </canvas>
+                    </div>
+                    <div flex="40">
+                        <canvas id="bar" class="chart chart-bar"
+                                chart-data="dataSensor" chart-labels="labelsSensor">
+                        </canvas>
+                    </div>
+                    <div flex="10"></div>
                 </div>
             </md-content>
         </md-tab>

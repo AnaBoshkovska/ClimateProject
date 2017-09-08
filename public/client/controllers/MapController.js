@@ -18,7 +18,11 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
     $scope.showProgress = false;
 
     $scope.getTrafficLayer = function(){
-        mapService.getTrafficLayer("map");
+        console.log("Mapa");
+        var lat = 34.2343;
+        var lng = 21.2324;
+        var selector = "mapa";
+        mapService.getTrafficLayer(selector, lat, lng);
     }
 
     $scope.$watch('city1', function (newVal, oldVal) {
@@ -53,6 +57,75 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
         }
         else return [];
     }
+
+    $scope.getData = function(){
+      $http.get('/sensors').then(function(response){
+          var red = 0;
+          var orange = 0;
+          var green = 0;
+          var brown = 0;
+          var humidity = 0;
+          var temp = 0;
+          var noise = 0;
+          var pm10 = 0;
+          var pm25 = 0;
+          var counter = 0;
+          var promises = [];
+         for(var i=0; i<response.data.length; i++){
+             var sensor = response.data[i];
+             console.log("FOR");
+             if(sensor.position != null && sensor.status == 'ACTIVE'){
+                 var coors = sensor.position.split(',');
+                 var lat = parseFloat(coors[0]);
+                 var lng = parseFloat(coors[1]);
+                 var selector = "mapa";
+
+                 mapService.getTrafficLayer(selector, lat, lng);
+               /*  $timeout(function(){
+                  console.log("TIMEOT");
+                  mapService.getTrafficLayer(selector, lat, lng);
+
+                  },5000);*/
+                 var promise = $http.get('/sensorData', {params: {lat: lat, lng: lng, id: sensor.sensorId, i:i}}).then(function(response){
+                     console.log(lat);
+                     console.log(lng);
+                     if(response.data.pm10 != null){
+                         red += response.data.red;
+                         orange += response.data.orange;
+                         green += response.data.green;
+                         brown += response.data.brown;
+                         temp += response.data.temperature;
+                         humidity += response.data.humidity;
+                         noise += response.data.noise;
+                         pm10 += response.data.pm10;
+                         pm25 += response.data.pm25;
+                         counter++;
+
+                     }
+
+
+                 },function(error){
+                    console.log(error);
+                 });
+                 promises.push(promise);
+             }
+
+         }
+       $q.all(promises).then(function(){
+           console.log(counter);
+
+           $scope.labels = ["Red", "Green", "orange", "brown"];
+           $scope.data = [red/counter, green/counter, orange/counter, brown/counter];
+           $scope.colors = ["#FF0000", "#00B420", "#FF9F00", "#C00000"];
+
+           $scope.labelsSensor = ["Temperature", "Humidity", "Noise", "PM10", "PM25"];
+           $scope.dataSensor = [temp/counter, humidity/counter, noise/counter, pm10/counter, pm25/counter];
+       })
+
+      }, function(error){
+          console.log(error);
+      })
+    };
 
 
     $scope.loadAll = function(city) {

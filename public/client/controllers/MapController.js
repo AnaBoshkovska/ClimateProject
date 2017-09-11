@@ -8,6 +8,9 @@ app.config(['$routeProvider',function($routeProvider){
 
 app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeout', function($scope, mapService, $http, $q, $timeout){
     //$scope.getTrafficLayer = mapService.getTrafficLayer("map");
+    $scope.visible = false;
+    $scope.statisticActive = false;
+    $scope.numberOfCars = 0;
     $scope.showData = false;
     $scope.showGraphs = false;
     $scope.cities = [];
@@ -16,6 +19,7 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
     $scope.searchText1= null;
     $scope.searchText2= null;
     $scope.showProgress = false;
+    $scope.showProgressActive = false;
     $scope.map = {
         center: [34.04924594193164, -118.24104309082031]
     };
@@ -62,6 +66,7 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
     }
 
     $scope.getData = function(){
+        $scope.showProgress = true;
       $http.get('/sensors').then(function(response){
           var red = 0;
           var orange = 0;
@@ -103,7 +108,10 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
                          noise += response.data.noise;
                          pm10 += response.data.pm10;
                          pm25 += response.data.pm25;
-                         counter++;
+                         counter+= red;
+                         counter+= orange;
+                         counter+= green;
+                         counter+= brown;
 
                      }
 
@@ -116,10 +124,21 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
 
          }
        $q.all(promises).then(function(){
+           $scope.showData = true;
+           $scope.showProgress = false;
            console.log(counter);
+           red = red/counter * 100;
+           green = green/counter * 100;
+           orange = orange/counter * 100;
+           brown = brown/counter * 100;
+           red = Math.round( red * 10 ) / 10;
+           orange = Math.round( orange * 10 ) / 10;
+           green = Math.round( green * 10 ) / 10;
+           brown = Math.round( brown * 10 ) / 10;
+           counter = Math.round( counter * 10 ) / 10;
 
-           $scope.labels = ["Red", "Green", "orange", "brown"];
-           $scope.data = [red/counter, green/counter, orange/counter, brown/counter];
+           $scope.labels = ["Red", "Green", "Orange", "Brown"];
+           $scope.data = [red, green, orange, brown];
            $scope.colors = ["#FF0000", "#00B420", "#FF9F00", "#C00000"];
 
            $scope.labelsSensor = ["Temperature", "Humidity", "Noise", "PM10", "PM25"];
@@ -205,6 +224,56 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
             console.log(error);
         });
     }
+    $scope.getStatistics = function(){
+        $scope.showProgressActive = true;
+        $http.get('/allMaps').then(function(response){
+            $scope.showProgressActive = false;
 
+            $scope.statisticActive = true;
+            var red = 0;
+            var orange = 0;
+            var green = 0;
+            var brown = 0;
+            var humidity = 0;
+            var temp = 0;
+            var noise = 0;
+            var pm10 = 0;
+            var pm25 = 0;
+            var counter = 0;
+            for(var i=0; i<response.data.length; i++){
+                var map = response.data[i];
+                if(map.humidity != null){
+                    red += map.red;
+                    orange += map.orange;
+                    green += map.green;
+                    brown += map.brown;
+                    temp += map.temperature;
+                    humidity += map.humidity;
+                    noise += map.noise;
+                    pm10 += map.pm10;
+                    pm25 += map.pm25;
+                    counter++;
+                }
+            }
+
+            $scope.labels = ["Red", "Green", "Orange", "Brown"];
+            $scope.dataStat = [red/counter, green/counter, orange/counter, brown/counter];
+            $scope.colors = ["#FF0000", "#00B420", "#FF9F00", "#C00000"];
+
+            $scope.labelsSensorStat = ["Temperature", "Humidity", "Noise", "PM10", "PM25"];
+            $scope.dataSensorStat = [temp/counter, humidity/counter, noise/counter, pm10/counter, pm25/counter];
+            var lat = 41.99646;
+            var meters = 156543.03392 * Math.cos(lat * Math.PI / 180) / Math.pow(2, 15);
+            var area = (red/counter)*meters;
+            var car = 5.25;
+            $scope.numberOfCars = parseInt(area/car);
+            $scope.CO2 = $scope.numberOfCars * 0.120;
+            $scope.CO2 = Math.round( $scope.CO2 * 10 ) / 10;
+
+            $scope.scrollToDiv();
+        }, function(error){
+            console.log(error);
+        });
+    }
 
 }]);

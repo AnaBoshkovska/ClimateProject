@@ -141,13 +141,8 @@ exports.getMap = function (lat, lng, sensorId, i) {
                             created_at: new Date()
                         });
                         //console.log("COUNTER: "+counter+": "+map);
-                        map.save(function (err) {
 
-                            if (err) error(err);
                             success(map);
-
-                        });
-
 
                 }).catch(function (err) {
                     error(err);

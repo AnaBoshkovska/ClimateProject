@@ -3,8 +3,9 @@
         <h2 class="md-display-3">Transport data visualization</h2>
         <p class="md-subhead subheader">Road transport is the largest contributor to global warming,
             through emission of carbon dioxide and air pollution.
-            Here you can compare how the transport impacts <br> on the air pollution and the amount of carbon dioxide emitted.</p>
-        <md-button><a href="#!visualization">Show Statistics</a></md-button>
+            Here you can compare how the transport impacts <br> on the air pollution and the amount of carbon dioxide
+            emitted.</p>
+        <md-button ng-click="getStatistics()" ng-show="!showProgressActive">Show Statistics</md-button><md-progress-circular ng-show="showProgressActive" md-mode="indeterminate"></md-progress-circular>
         <md-button class="md-icon-button icon" ng-click="scrollToDiv()">
             <md-icon class="icon" md-font-set="md">keyboard_arrow_down</md-icon>
         </md-button>
@@ -19,7 +20,8 @@
                             <div id="mapa" style="width:700px; height:500px">
                                 <ng-map zoom="13" center="[41.99646, 21.43141]">
                                     <traffic-layer>
-                                        <marker ng-repeat="pos in positions" position="{{pos.lat}},{{pos.lng}}"></marker>
+                                        <marker ng-repeat="pos in positions"
+                                                position="{{pos.lat}},{{pos.lng}}"></marker>
                                     </traffic-layer>
                                 </ng-map>
                             </div>
@@ -28,28 +30,45 @@
                         </div>
 
                         <div layout="column" flex="30" flex-offset="5" layout-align="start center">
-                            <p>The Google Traffic layer modify the base map layer to display current traffic conditions. These layers are available in select regions.</p>
-                            <p>Traffic Layer adds real-time traffic information (where supported) to the map. Traffic information is refreshed frequently, but not instantly.
-                                Rapid consecutive requests for the same area are unlikely to yield different results.</p>
+                            <p>The Google Traffic layer modify the base map layer to display current traffic conditions.
+                                These layers are available in select regions.</p>
+                            <p>Traffic Layer adds real-time traffic information (where supported) to the map. Traffic
+                                information is refreshed frequently, but not instantly.
+                                Rapid consecutive requests for the same area are unlikely to yield different
+                                results.</p>
                             <md-button ng-show="!showProgress" ng-click="getData()">GET DATA</md-button>
                             <md-progress-circular ng-show="showProgress" md-mode="indeterminate"></md-progress-circular>
                         </div>
                     </div>
                 </div>
 
-                <div layout="row" layout-wrap>
-                    <div flex="10"></div>
-                    <div flex="40">
-                        <canvas id="doughnut" class="chart chart-doughnut"
-                                chart-data="data" chart-labels="labels" chart-colors="colors">
-                        </canvas>
-                    </div>
-                    <div flex="40">
-                        <canvas id="bar" class="chart chart-bar"
-                                chart-data="dataSensor" chart-labels="labelsSensor">
-                        </canvas>
-                    </div>
-                    <div flex="10"></div>
+                <div layout="row" layout-align="strech" ng-show="showData">
+                    <md-card md-theme-watch flex="50" layout="column" layout-align="center center">
+                        <md-card-title>
+                            <md-card-title-text>
+                                <span class="md-headline">Traffic intensity</span>
+                                <span class="md-subhead">Number of cars in traffic</span>
+                            </md-card-title-text>
+                        </md-card-title>
+                        <md-card-content>
+                            <canvas flex="100" id="doughnut" class="chart chart-doughnut"
+                                    chart-data="data" chart-labels="labels" chart-colors="colors">
+                            </canvas>
+                        </md-card-content>
+                    </md-card>
+                    <md-card md-theme-watch flex="50" layout="column" layout-align="center center">
+                        <md-card-title>
+                            <md-card-title-text>
+                                <span class="md-headline">Traffic intensity</span>
+                                <span class="md-subhead">Number of cars in traffic</span>
+                            </md-card-title-text>
+                        </md-card-title>
+                        <md-card-content>
+                            <canvas flex="100" id="bar" class="chart chart-bar"
+                                    chart-data="dataSensor" chart-labels="labelsSensor">
+                            </canvas>
+                        </md-card-content>
+                    </md-card>
                 </div>
             </md-content>
         </md-tab>
@@ -70,7 +89,8 @@
                         <md-item-template>
                             <span md-highlight-text="searchText">{{item.name + ',' + item.country}}</span>
                         </md-item-template>
-                        <div ng-messages="searchForm.autocompleteField.$error" ng-if="searchForm.autocompleteField.$touched">
+                        <div ng-messages="searchForm.autocompleteField.$error"
+                             ng-if="searchForm.autocompleteField.$touched">
                             <div ng-message="md-require-match">Please select an existing state.</div>
                             <div ng-message="minlength">Your entry is not long enough.</div>
                         </div>
@@ -89,7 +109,8 @@
                         <md-item-template>
                             <span md-highlight-text="searchText">{{item.name + ',' + item.country}}</span>
                         </md-item-template>
-                        <div ng-messages="searchForm.autocompleteField.$error" ng-if="searchForm.autocompleteField.$touched">
+                        <div ng-messages="searchForm.autocompleteField.$error"
+                             ng-if="searchForm.autocompleteField.$touched">
                             <div ng-message="md-require-match">Please select an existing state.</div>
                             <div ng-message="minlength">Your entry is not long enough.</div>
                         </div>
@@ -139,7 +160,9 @@
                     </div>
                     <div layout="column" layout-align="center center">
                         <md-progress-circular md-mode="indeterminate" ng-show="showProgress"></md-progress-circular>
-                        <md-button class="md-raised md-primary" ng-show="!showProgress" ng-click="compareCities()">Compare</md-button>
+                        <md-button class="md-raised md-primary" ng-show="!showProgress" ng-click="compareCities()">
+                            Compare
+                        </md-button>
                     </div>
                     <div layout="column">
                         <div id="map2" style="width:700px; height:500px"></div>
@@ -186,6 +209,84 @@
                 </div>
             </md-content>
         </md-tab>
+        <md-tab label="STATISTICS" md-active="statisticActive">
+            <md-content class="md-padding" layout-align="center start">
+                <div layout="row" layout-align="strech">
+                    <md-card md-theme-watch flex="50" layout="column">
+                        <md-card-title>
+                            <md-card-title-text>
+                                <span class="md-headline">Traffic intensity</span>
+                                <span class="md-subhead">Number of cars in traffic</span>
+                            </md-card-title-text>
+                        </md-card-title>
+                        <md-card-content>
+                            <canvas id="doughnutStat" class="chart chart-doughnut"
+                                    chart-data="dataStat" chart-labels="labels" chart-colors="colors">
+                            </canvas>
+                        </md-card-content>
+                    </md-card>
+                    <md-card md-theme-watch flex="50">
+                        <md-card-title>
+                            <md-card-title-text>
+                                <span class="md-headline">Air Quality</span>
+                                <span class="md-subhead">Air Quality based on traffic intensity</span>
+                            </md-card-title-text>
+                        </md-card-title>
+                        <md-card-content>
+                            <canvas id="barStat" class="chart chart-bar"
+                                    chart-data="dataSensorStat" chart-labels="labelsSensorStat" style="margin-top:35%">
+                            </canvas>
+                        </md-card-content>
+                    </md-card>
+                </div>
+                <div layout="row" layout-align="strech">
+                    <md-card md-theme-watch flex="50">
+                        <md-card-title>
+                            <md-card-title-text>
+                                <span class="md-headline">Number of cars in traffic jam</span>
+                            </md-card-title-text>
+                        </md-card-title>
+                        <md-card-content>
+                            <div layout="row" layout-align="center center">
+                                <i class="material-icons" style="color:red; font-size: 300px;">directions_car</i>
+                                <h1 count-up id="opens" ng-model="numberOfCars"
+                                    style="font-size: 80px;"></h1>
+                            </div>
+                        </md-card-content>
+                    </md-card>
+                    <md-card md-theme-watch flex="50">
+                        <md-card-title>
+                            <md-card-title-text>
+                                <span class="md-headline">CO<sub>2</sub> concetration in Air</span>
+                                <span class="md-subhead">CO<sub>2</sub> concetration based on the number of cars in traffic jam</span>
+                            </md-card-title-text>
+                        </md-card-title>
+                        <md-card-content layout-align="center center">
+                            <div layout="column" layout-align="center center" class="progress-wrapper">
+                                <round-progress
+                                        max="180"
+                                        current="CO2"
+                                        color="#99cc00"
+                                        bgcolor="#eaeaea"
+                                        radius="150"
+                                        stroke="20"
+                                        semi="false"
+                                        rounded="false"
+                                        clockwise="true"
+                                        responsive="false"
+                                        duration="800"
+                                        animation="linearEase"
+                                        animation-delay="0"></round-progress>
+                                <div class="text"><span class="size">{{CO2}}</span><br> g/m<sup>3</sup></div>
+                                <div class="md-headline">CO<sub>2</sub></div>
+                            </div>
+
+                        </md-card-content>
+                    </md-card>
+                </div>
+            </md-content>
+        </md-tab>
+
     </md-tabs>
 
 

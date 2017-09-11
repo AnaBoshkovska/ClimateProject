@@ -13,13 +13,16 @@ app.config(['$routeProvider',function($routeProvider){
 app.controller('VisualizationController', ['$scope', '$http', function($scope, $http){
 
     $scope.visible = false;
+    $scope.numberOfCars = 0;
     $scope.scrollToDiv = function(){
         $scope.visible = true;
         $('html, body').animate({
             scrollTop: $('#skopje').offset().top - 20
         }, 'fast');
         $scope.getStatistics();
-    }
+    };
+
+
 
     $scope.getStatistics = function(){
 
@@ -60,6 +63,7 @@ app.controller('VisualizationController', ['$scope', '$http', function($scope, $
             var area = (red/counter)*meters;
             var car = 5.25;
             $scope.numberOfCars = parseInt(area/car);
+            $scope.CO2 = $scope.numberOfCars * 0.120;
         }, function(error){
             console.log(error);
         });

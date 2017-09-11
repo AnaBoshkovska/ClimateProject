@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngRoute','ngMaterial','angular-svg-round-progressbar', 'chart.js', 'ngMap']);
+var app = angular.module('app', ['ngRoute','ngMaterial','angular-svg-round-progressbar', 'chart.js', 'ngMap', 'ngCountup']);
 
 app.config(function($routeProvider, $mdIconProvider) {
 

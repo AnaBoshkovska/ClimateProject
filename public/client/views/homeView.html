@@ -4,6 +4,7 @@
         <p class="md-subhead subheader">Road transport is the largest contributor to global warming,
             through emission of carbon dioxide and air pollution.
             Here you can compare how the transport impacts <br> on the air pollution and the amount of carbon dioxide emitted.</p>
+        <md-button><a href="#!visualization">Show Statistics</a></md-button>
         <md-button class="md-icon-button icon" ng-click="scrollToDiv()">
             <md-icon class="icon" md-font-set="md">keyboard_arrow_down</md-icon>
         </md-button>
@@ -15,7 +16,13 @@
                 <div id="showMap" layout="column" layout-align="start center">
                     <div layout="row" layout-align="center start">
                         <div layout="column">
-                            <div id="mapa" style="width:700px; height:500px"></div>
+                            <div id="mapa" style="width:700px; height:500px">
+                                <ng-map zoom="13" center="[41.99646, 21.43141]">
+                                    <traffic-layer>
+                                        <marker ng-repeat="pos in positions" position="{{pos.lat}},{{pos.lng}}"></marker>
+                                    </traffic-layer>
+                                </ng-map>
+                            </div>
                             <canvas hidden id="mapCanvas">
                             </canvas>
                         </div>
@@ -29,6 +36,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div layout="row" layout-wrap>
                     <div flex="10"></div>
                     <div flex="40">

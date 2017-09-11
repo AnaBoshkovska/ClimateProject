@@ -80,7 +80,18 @@ app.get('/sensorData', function(req, res, next){
     }, function (err) {
         res.render('error', {error: error});
     });
-})
+});
+
+app.get('/allMaps', function(req, res, next){
+    console.log("MAPS");
+    mapService.getAllMaps().then(function(success){
+        res.json(success)
+    }, function(error){
+       res.render('error', {error: error});
+    });
+});
+
+
 /*
 
 sensorService.getSensors().then(function (mes) {

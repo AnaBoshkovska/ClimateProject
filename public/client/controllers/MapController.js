@@ -16,6 +16,9 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
     $scope.searchText1= null;
     $scope.searchText2= null;
     $scope.showProgress = false;
+    $scope.map = {
+        center: [34.04924594193164, -118.24104309082031]
+    };
 
     $scope.getTrafficLayer = function(){
         console.log("Mapa");
@@ -71,6 +74,7 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
           var pm25 = 0;
           var counter = 0;
           var promises = [];
+          $scope.positions = [];
          for(var i=0; i<response.data.length; i++){
              var sensor = response.data[i];
              console.log("FOR");
@@ -78,17 +82,17 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
                  var coors = sensor.position.split(',');
                  var lat = parseFloat(coors[0]);
                  var lng = parseFloat(coors[1]);
+                 $scope.positions.push({
+                    lat:lat,
+                     lng:lng
+                 });
+
                  var selector = "mapa";
-
-                 mapService.getTrafficLayer(selector, lat, lng);
-               /*  $timeout(function(){
-                  console.log("TIMEOT");
-                  mapService.getTrafficLayer(selector, lat, lng);
-
-                  },5000);*/
+                 $scope.map = {
+                     center: [lat, lng]
+                 };
                  var promise = $http.get('/sensorData', {params: {lat: lat, lng: lng, id: sensor.sensorId, i:i}}).then(function(response){
-                     console.log(lat);
-                     console.log(lng);
+
                      if(response.data.pm10 != null){
                          red += response.data.red;
                          orange += response.data.orange;

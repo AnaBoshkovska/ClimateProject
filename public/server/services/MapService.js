@@ -43,7 +43,7 @@ exports.getMap = function (lat, lng, sensorId, i) {
                                 if (err) {
                                     return console.error(err);
                                 }
-                                console.log('successfully deleted');
+                               // console.log('successfully deleted');
                             });
                         }
                     });
@@ -140,11 +140,11 @@ exports.getMap = function (lat, lng, sensorId, i) {
                             pm25: pm25,
                             created_at: new Date()
                         });
-                        console.log("COUNTER: "+counter+": "+map);
+                        //console.log("COUNTER: "+counter+": "+map);
                         map.save(function (err) {
 
                             if (err) error(err);
-                            success("Map saves");
+                            success(map);
 
                         });
 
@@ -211,3 +211,11 @@ exports.getPixels = function (lat, lng) {
     });
 
 };
+
+exports.getAllMaps = function(){
+    return new Promise(function(success, error){
+
+        var maps = Map.find();
+        success(maps);
+    });
+}

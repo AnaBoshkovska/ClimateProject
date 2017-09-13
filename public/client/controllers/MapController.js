@@ -200,7 +200,7 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
            brown = Math.round( brown * 10 ) / 10;
 
 
-           $scope.labels = ["Red", "Green", "Orange", "Brown"];
+           $scope.labels = ["Red(%)", "Green(%)", "Orange(%)", "Brown(%)"];
            $scope.data = [red, green, orange, brown];
            $scope.colors = ["#FF0000", "#00B420", "#FF9F00", "#C00000"];
 
@@ -426,7 +426,7 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
 
     $scope.showAqiMap = function(){
         var  map  =  new  google.maps.Map(document.getElementById('AQIMap'),  {
-            center:  new  google.maps.LatLng(51.505,  -0.09),
+            center:  new  google.maps.LatLng(41.9973,  21.4280),
             mapTypeId:  google.maps.MapTypeId.ROADMAP,
             zoom:  11
         });

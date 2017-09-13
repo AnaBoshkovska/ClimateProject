@@ -450,7 +450,19 @@
                     </md-card>
                 </div>
                 <br>
-                <div  id='AQIMap'  style='height:380px;'  />
+                <div layout="row" flex="100" layout-align="center center">
+                    <md-card md-theme-watch flex="100">
+                        <md-card-title>
+                            <md-card-title-text>
+                                <span class="md-headline">AQI - Air Quality Index</span>
+                                <span class="md-subhead">Shows the map of the world with markers representing the AQI near the places it is measured.</span>
+                            </md-card-title-text>
+                        </md-card-title>
+                        <md-card-content>
+                            <div flex="100" id='AQIMap'  style='height:380px; width:100%'  />
+                        </md-card-content>
+                    </md-card>
+                </div>
             </md-content>
         </md-tab>
 

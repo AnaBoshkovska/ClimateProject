@@ -5,20 +5,21 @@
             through emission of carbon dioxide and air pollution.
             Here you can compare how the transport impacts <br> on the air pollution and the amount of carbon dioxide
             emitted.</p>
-        <md-button ng-click="getStatistics()" ng-show="!showProgressActive">Show Statistics</md-button><md-progress-circular ng-show="showProgressActive" md-mode="indeterminate"></md-progress-circular>
+        <md-button ng-click="showStatistics()" ng-show="!showProgressActive">Show Statistics</md-button>
+        <md-progress-circular ng-show="showProgressActive" md-mode="indeterminate"></md-progress-circular>
         <md-button class="md-icon-button icon" ng-click="scrollToDiv()">
             <md-icon class="icon" md-font-set="md">keyboard_arrow_down</md-icon>
         </md-button>
     </div>
-    <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs="always" id="showData">
+    <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs="always" id="showData" md-selected="selectedTab">
         <md-tab label="AIR NOW">
 
             <md-content class="md-padding">
-                <div id="showMap" layout="column" layout-align="start center">
-                    <div layout="row" layout-align="center start">
+                <div id="showMap" layout="row" layout-align="center start">
+
                         <div layout="column">
-                            <div id="mapa" style="width:700px; height:500px">
-                                <ng-map zoom="13" center="[41.99646, 21.43141]">
+                            <div id="mapa" style="width:700px; height: 50%">
+                                <ng-map zoom="13" center="[41.99646, 21.43141]" style="width:700px; height: 50%">
                                     <traffic-layer>
                                         <marker ng-repeat="pos in positions"
                                                 position="{{pos.lat}},{{pos.lng}}"></marker>
@@ -39,32 +40,88 @@
                             <md-button ng-show="!showProgress" ng-click="getData()">GET DATA</md-button>
                             <md-progress-circular ng-show="showProgress" md-mode="indeterminate"></md-progress-circular>
                         </div>
-                    </div>
                 </div>
 
                 <div layout="row" layout-align="strech" ng-show="showData">
-                    <md-card md-theme-watch flex="50" layout="column" layout-align="center center">
+                    <md-card md-theme-watch flex="50" layout="column" layout-align="strech">
                         <md-card-title>
                             <md-card-title-text>
-                                <span class="md-headline">Traffic intensity</span>
-                                <span class="md-subhead">Number of cars in traffic</span>
+                                <span class="md-headline">Traffic</span>
+                                <span class="md-subhead">Represents the real time traffic in Skopje, calculated based on the traffic layer provided from the Google Maps.</span>
                             </md-card-title-text>
                         </md-card-title>
-                        <md-card-content>
-                            <canvas flex="100" id="doughnut" class="chart chart-doughnut"
+                        <md-card-content layout="column" layout-align="center center">
+                            <div layout="row" class="md-title">Legend</div>
+                            <div layout="row" layout-align="start end ">
+                                <md-fab-speed-dial md-direction="up" md-open="isOpenBrown" flex="25"
+                                                   class="md-scale" ng-class="{ 'md-hover-full': hoverBrown }"
+                                                   ng-mouseenter="isOpenBrown=true"
+                                                   ng-mouseleave="isOpenBrown=false">
+                                    <md-fab-trigger>
+                                        <md-button aria-label="menu" class="md-fab btnBrown">
+                                        </md-button>
+                                    </md-fab-trigger>
+
+                                    <md-fab-actions>
+                                        <span>The darker the red, the slower the speed of traffic on the road</span>
+                                    </md-fab-actions>
+                                </md-fab-speed-dial>
+                                <md-fab-speed-dial md-direction="up" md-open="isOpenRed" flex="25"
+                                                   class="md-scale" ng-class="{ 'md-hover-full': hoverRed }"
+                                                   ng-mouseenter="isOpenRed=true" ng-mouseleave="isOpenRed=false">
+                                    <md-fab-trigger>
+                                        <md-button aria-label="menu" class="md-fab btnRed">
+                                        </md-button>
+                                    </md-fab-trigger>
+
+                                    <md-fab-actions>
+                                        <span>Traffic delays</span>
+                                    </md-fab-actions>
+                                </md-fab-speed-dial>
+                                </md-fab-speed-dial>
+                                <md-fab-speed-dial md-direction="up" md-open="isOpenOrange" flex="25"
+                                                   class="md-scale" ng-class="{ 'md-hover-full': hoverOrange }"
+                                                   ng-mouseenter="isOpenOrange=true"
+                                                   ng-mouseleave="isOpenOrange=false">
+                                    <md-fab-trigger>
+                                        <md-button aria-label="menu" class="md-fab btnOrange">
+                                        </md-button>
+                                    </md-fab-trigger>
+
+                                    <md-fab-actions>
+                                        <span>Medium amount of traffic</span>
+                                    </md-fab-actions>
+                                </md-fab-speed-dial>
+                                </md-fab-speed-dial>
+                                <md-fab-speed-dial md-direction="up" md-open="isOpenGreen" flex="25"
+                                                   class="md-scale" ng-class="{ 'md-hover-full': hoverGreen }"
+                                                   ng-mouseenter="isOpenGreen=true"
+                                                   ng-mouseleave="isOpenGreen=false">
+                                    <md-fab-trigger>
+                                        <md-button aria-label="menu" class="md-fab btnGreen">
+                                        </md-button>
+                                    </md-fab-trigger>
+
+                                    <md-fab-actions>
+                                        <span>No traffic delays</span>
+                                    </md-fab-actions>
+                                </md-fab-speed-dial>
+                            </div>
+                            <canvas  id="doughnut" class="chart chart-doughnut"
                                     chart-data="data" chart-labels="labels" chart-colors="colors">
                             </canvas>
                         </md-card-content>
                     </md-card>
-                    <md-card md-theme-watch flex="50" layout="column" layout-align="center center">
+                    <md-card md-theme-watch flex="50" layout="column" layout-align="strech">
                         <md-card-title>
                             <md-card-title-text>
-                                <span class="md-headline">Traffic intensity</span>
-                                <span class="md-subhead">Number of cars in traffic</span>
+                                <span class="md-headline">Air Quality</span>
+                                <span class="md-subhead">Represents data for the air parameters collected with the help of multiple sensors located in Skopje and shown on map with markers. </span>
                             </md-card-title-text>
                         </md-card-title>
-                        <md-card-content>
-                            <canvas flex="100" id="bar" class="chart chart-bar"
+                        <md-card-content layout="column" layout-align="center center">
+
+                                <canvas id="bar" class="chart chart-bar"
                                     chart-data="dataSensor" chart-labels="labelsSensor">
                             </canvas>
                         </md-card-content>
@@ -216,12 +273,74 @@
                         <md-card-title>
                             <md-card-title-text>
                                 <span class="md-headline">Traffic intensity</span>
-                                <span class="md-subhead">Number of cars in traffic</span>
+                                <span class="md-subhead">Average number of traffic delays based on data collected through the time for the city of Skopje, expressed in percents.
+                                Traffic details are collected with the help of Google Maps Traffic Layer and are represented with the corresponding color.
+                                You can see the Legend below in order to see the meaning of each color.
+
+                                </span>
                             </md-card-title-text>
                         </md-card-title>
-                        <md-card-content>
+                        <md-card-content layout-align="center center">
+                            <div layout="column" layout-align="center center">
+                                <div layout="row" class="md-title">Legend</div>
+                                <div layout="row" layout-align="start end ">
+                                    <md-fab-speed-dial md-direction="up" md-open="isOpenBrown" flex="25"
+                                                       class="md-scale" ng-class="{ 'md-hover-full': hoverBrown }"
+                                                       ng-mouseenter="isOpenBrown=true"
+                                                       ng-mouseleave="isOpenBrown=false">
+                                        <md-fab-trigger>
+                                            <md-button aria-label="menu" class="md-fab btnBrown">
+                                            </md-button>
+                                        </md-fab-trigger>
+
+                                        <md-fab-actions>
+                                            <span>The darker the red, the slower the speed of traffic on the road</span>
+                                        </md-fab-actions>
+                                    </md-fab-speed-dial>
+                                    <md-fab-speed-dial md-direction="up" md-open="isOpenRed" flex="25"
+                                                       class="md-scale" ng-class="{ 'md-hover-full': hoverRed }"
+                                                       ng-mouseenter="isOpenRed=true" ng-mouseleave="isOpenRed=false">
+                                        <md-fab-trigger>
+                                            <md-button aria-label="menu" class="md-fab btnRed">
+                                            </md-button>
+                                        </md-fab-trigger>
+
+                                        <md-fab-actions>
+                                            <span>Traffic delays</span>
+                                        </md-fab-actions>
+                                    </md-fab-speed-dial>
+                                    </md-fab-speed-dial>
+                                    <md-fab-speed-dial md-direction="up" md-open="isOpenOrange" flex="25"
+                                                       class="md-scale" ng-class="{ 'md-hover-full': hoverOrange }"
+                                                       ng-mouseenter="isOpenOrange=true"
+                                                       ng-mouseleave="isOpenOrange=false">
+                                        <md-fab-trigger>
+                                            <md-button aria-label="menu" class="md-fab btnOrange">
+                                            </md-button>
+                                        </md-fab-trigger>
+
+                                        <md-fab-actions>
+                                            <span>Medium amount of traffic</span>
+                                        </md-fab-actions>
+                                    </md-fab-speed-dial>
+                                    </md-fab-speed-dial>
+                                    <md-fab-speed-dial md-direction="up" md-open="isOpenGreen" flex="25"
+                                                       class="md-scale" ng-class="{ 'md-hover-full': hoverGreen }"
+                                                       ng-mouseenter="isOpenGreen=true"
+                                                       ng-mouseleave="isOpenGreen=false">
+                                        <md-fab-trigger>
+                                            <md-button aria-label="menu" class="md-fab btnGreen">
+                                            </md-button>
+                                        </md-fab-trigger>
+
+                                        <md-fab-actions>
+                                            <span>No traffic delays</span>
+                                        </md-fab-actions>
+                                    </md-fab-speed-dial>
+                                </div>
+                            </div>
                             <canvas id="doughnutStat" class="chart chart-doughnut"
-                                    chart-data="dataStat" chart-labels="labels" chart-colors="colors">
+                                    chart-data="dataStat" chart-labels="labelsData" chart-colors="colors">
                             </canvas>
                         </md-card-content>
                     </md-card>
@@ -229,13 +348,54 @@
                         <md-card-title>
                             <md-card-title-text>
                                 <span class="md-headline">Air Quality</span>
-                                <span class="md-subhead">Air Quality based on traffic intensity</span>
+                                <span class="md-subhead">Graphs represents the relationships between the delays in traffic and the air quality.
+                                More specifically, on the graphs are shown dependencies between the PM 10 and PM 2.5 particles in the air with the traffic delays.
+                                Lines represents the amount of traffic delays, while bars represent the amount of particales in the air.
+                                </span>
                             </md-card-title-text>
                         </md-card-title>
                         <md-card-content>
-                            <canvas id="barStat" class="chart chart-bar"
-                                    chart-data="dataSensorStat" chart-labels="labelsSensorStat" style="margin-top:35%">
-                            </canvas>
+                            <div layout="column" layout-align="center center">
+                                <div layout="row" class="md-title">Legend</div>
+                                <div layout="row" layout-align="center center ">
+                                    <md-fab-speed-dial md-direction="left" md-open="isOpenRedGraph" flex="25"
+                                                       class="md-scale" ng-class="{ 'md-hover-full': hoverRedGraph }"
+                                                       ng-mouseenter="isOpenRedGraph=true" ng-mouseleave="isOpenRedGraph=false">
+                                        <md-fab-trigger>
+                                            <md-button aria-label="menu" class="md-fab btnRed">
+                                            </md-button>
+                                        </md-fab-trigger>
+
+                                        <md-fab-actions>
+                                            <span>Amount of traffic delays</span>
+                                        </md-fab-actions>
+                                    </md-fab-speed-dial>
+                                    <md-fab-speed-dial md-direction="right" md-open="isOpenGreenGraph" flex="25"
+                                                       class="md-scale" ng-class="{ 'md-hover-full': hoverGreenGraph }"
+                                                       ng-mouseenter="isOpenGreenGraph=true"
+                                                       ng-mouseleave="isOpenGreenGraph=false">
+                                        <md-fab-trigger>
+                                            <md-button aria-label="menu" class="md-fab btnGreen">
+                                            </md-button>
+                                        </md-fab-trigger>
+
+                                        <md-fab-actions>
+                                            <span>Amount of PM 10 / PM 2.5 particles in air</span>
+                                        </md-fab-actions>
+                                    </md-fab-speed-dial>
+                                </div>
+
+                                    <canvas id="barStatPm10" class="chart-bar" chart-dataset-override="datasetOverridePm10"
+                                            chart-data="dataPm10" chart-labels="labelsPm10" chart-colors="colorsStat">
+                                    </canvas>
+                                <span>PM 10</span>
+                                    <canvas id="barStatPm25" class="chart-bar" chart-dataset-override="datasetOverridePm25"
+                                            chart-data="dataPm25" chart-labels="labelsPm25" chart-colors="colorsStat">
+                                    </canvas>
+                                <span>PM 2.5</span>
+                            </div>
+
+
                         </md-card-content>
                     </md-card>
                 </div>
@@ -243,7 +403,10 @@
                     <md-card md-theme-watch flex="50">
                         <md-card-title>
                             <md-card-title-text>
-                                <span class="md-headline">Number of cars in traffic jam</span>
+                                <span class="md-headline">Average number of cars</span>
+                                <span class="md-subhead">Counts the daily average number of cars that are part of the traffic jam.
+                                    The number of cars is calculated based on the everyday traffic in the city of Skopje and are taken into account only the parts of the traffic labeled with red color or the ones where is a traffic jam.
+                                </span>
                             </md-card-title-text>
                         </md-card-title>
                         <md-card-content>
@@ -257,8 +420,10 @@
                     <md-card md-theme-watch flex="50">
                         <md-card-title>
                             <md-card-title-text>
-                                <span class="md-headline">CO<sub>2</sub> concetration in Air</span>
-                                <span class="md-subhead">CO<sub>2</sub> concetration based on the number of cars in traffic jam</span>
+                                <span class="md-headline">Average CO<sub>2</sub> concetration</span>
+                                <span class="md-subhead">CO<sub>2</sub> concetration in air depends on the calculated average number of cars.
+                                    Represents the daily average number of CO<sub>2</sub> concetration emitted from the cars.
+                                    It is taken into account the amount of CO<sub>2</sub> a car emit in standstill. </span>
                             </md-card-title-text>
                         </md-card-title>
                         <md-card-content layout-align="center center">

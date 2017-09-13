@@ -209,8 +209,78 @@ exports.getPixels = function (lat, lng) {
 
 exports.getAllMaps = function(){
     return new Promise(function(success, error){
+        console.log("UNATRE");
+        Map.aggregate([
+            {
+                $group: {
+                    _id: '$pm10',
+                    red: {$sum: '$red'},
+                    green: {$sum: '$green'},
+                    orange:{$sum: '$orange'},
+                    brown:{$sum: '$brown'},
+                    count:{$sum:1}
+                }
+            }
+        ], function (err, result) {
+            if (err) {
+                console.log(err);
+                error(err);
+            } else {
+                Map.aggregate([
+                    {
+                        $group: {
+                            _id: '$pm25',
+                            red: {$sum: '$red'},
+                            green: {$sum: '$green'},
+                            orange: {$sum: '$orange'},
+                            brown: {$sum: '$brown'},
+                            count: {$sum: 1}
+                        }
+                    }
+                ], function (err, result2) {
+                    if (err) {
+                        console.log(err);
+                        error(err);
+                    } else {
+                        Map.aggregate([
+                            {
+                                $group: {
+                                    _id: '$pm10',
+                                    red: {$sum: '$red'},
+                                    green: {$sum: '$green'},
+                                    orange:{$sum: '$orange'},
+                                    brown:{$sum: '$brown'},
+                                    count:{$sum:1}
+                                }
+                            }
+                        ], function (err, result) {
+                            if (err) {
+                                console.log(err);
+                                error(err);
+                            } else {
+                                Map.aggregate([
+                                    {
+                                        $group: { _id: {year : { $year : "$created_at" },
+                                            month : { $month : "$created_at" },
+                                            day : { $dayOfMonth : "$created_at" },}, avgRed: {'$avg': '$red'} }
+                                    }
+                                ], function (err, result3) {
+                                    if (err) {
+                                        console.log(err);
+                                        error(err);
+                                    } else {
+                                        success({"pm10": result, "pm25": result2, 'cars': result3});
 
-        var maps = Map.find();
-        success(maps);
+                                    }
+                                });
+                            }
+                        });
+
+                    }
+                });
+            }
+
+        });
+
     });
 }

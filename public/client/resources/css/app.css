@@ -109,3 +109,69 @@ body {
 .progress-wrapper .size{
     font-size: 50px;
 }
+
+.btnRed {
+    color : red;
+    background-color: red !important;
+    border-radius: 10px 0 0 10px;
+    font-size: 16px;
+}
+
+.btnRed:not([disabled]):hover {
+    background-color: #ac2925 !important;
+    color: white;
+}
+
+.btnRed[disabled] {
+    color : rgb(187, 187, 187);
+    background-color: rgba(230, 230, 229, 0.96);
+}
+.btnOrange {
+    color : orange;
+    background-color: orange !important;
+    border-radius: 10px 0 0 10px;
+    font-size: 16px;
+}
+
+.btnOrange:not([disabled]):hover {
+    background-color: #e38d13 !important;
+    color: white;
+}
+
+.btnOrange[disabled] {
+    color : rgb(187, 187, 187);
+    background-color: rgba(230, 230, 229, 0.96);
+}
+
+.btnBrown {
+    color : #C00000;
+    background-color: #C00000 !important;
+    border-radius: 10px 0 0 10px;
+    font-size: 16px;
+}
+
+.btnBrown:not([disabled]):hover {
+    background-color: brown !important;
+    color: white;
+}
+
+.btnBrown[disabled] {
+    color : rgb(187, 187, 187);
+    background-color: rgba(230, 230, 229, 0.96);
+}
+.btnGreen {
+    color : green;
+    background-color: green !important;
+    border-radius: 10px 0 0 10px;
+    font-size: 16px;
+}
+
+.btnGreen:not([disabled]):hover {
+    background-color: #2b542c !important;
+    color: white;
+}
+
+.btnGreen[disabled] {
+    color : rgb(187, 187, 187);
+    background-color: rgba(230, 230, 229, 0.96);
+}

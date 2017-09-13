@@ -390,6 +390,7 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
             $scope.CO2 = Math.round( $scope.CO2 * 10 ) / 10;
 
             $scope.scrollToDiv();
+            $scope.showAqiMap();
         }, function(error){
             console.log(error);
         });
@@ -422,4 +423,22 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
             type: 'line'
         }
     ];
+
+    $scope.showAqiMap = function(){
+        var  map  =  new  google.maps.Map(document.getElementById('AQIMap'),  {
+            center:  new  google.maps.LatLng(51.505,  -0.09),
+            mapTypeId:  google.maps.MapTypeId.ROADMAP,
+            zoom:  11
+        });
+
+        var  t  =  new  Date().getTime();
+        var  waqiMapOverlay  =  new  google.maps.ImageMapType({
+            getTileUrl:  function(coord,  zoom)  {
+                return  'https://tiles.waqi.info/tiles/usepa-aqi/'  +  zoom  +  "/"  +  coord.x  +  "/"  +  coord.y  +  ".png?token=_TOKEN_ID_";
+            },
+            name:  "Air  Quality",
+        });
+
+        map.overlayMapTypes.insertAt(0,waqiMapOverlay);
+    }
 }]);

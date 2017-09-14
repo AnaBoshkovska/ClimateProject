@@ -21,6 +21,7 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
     $scope.searchText2= null;
     $scope.showProgress = false;
     $scope.showProgressActive = false;
+    $scope.citiesZoom = 13;
 
     $scope.hiddenBrown = $scope.hiddenRed = $scope.hiddenOrange = $scope.hiddenGreen = false;
     $scope.isOpenBrown = $scope.isOpenRed = $scope.isOpenOrange = $scope.isOpenGreen = $scope.isOpenGreenGraph = $scope.isOpenRedGraph= false;
@@ -95,7 +96,8 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
        if(newVal !== null && newVal !== undefined) {
            $scope.lat = newVal.lat;
            $scope.lng = newVal.lon;
-           mapService.getTrafficLayer("map1", $scope.lat, $scope.lng);
+           $scope.getFirstMap("map1", $scope.lat, $scope.lng, 13);
+           //mapService.zoom();
        }
        if($scope.city1 !== null && $scope.city2 !== null)
            $scope.showData = true;
@@ -110,7 +112,7 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
         if(newVal !== null && newVal !== undefined) {
             $scope.lat = newVal.lat;
             $scope.lng = newVal.lon;
-            mapService.getTrafficLayer("map2", $scope.lat, $scope.lng);
+            $scope.getSecondMap("map2", $scope.lat, $scope.lng, 13);
         }
         if($scope.city1 !== null && $scope.city2 !== null)
             $scope.showData = true;
@@ -239,7 +241,7 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
         $http.get('/citiesData', {params: {name1: $scope.city1.name, name2: $scope.city2.name}}).then(function(response){
             $scope.airCity1 = response.data.city1.data;
             $scope.airCity2 = response.data.city2.data;
-            $http.get('/citiesMap', {params: {lat1: $scope.city1.lat, lng1: $scope.city1.lon, lat2: $scope.city2.lat, lng2: $scope.city2.lon}}).then(function(response){
+            $http.get('/citiesMap', {params: {lat1: $scope.city1.lat, lng1: $scope.city1.lon, lat2: $scope.city2.lat, lng2: $scope.city2.lon, zoom: $scope.citiesZoom}}).then(function(response){
                 $scope.co2_1 = response.data.city1.cars * 0.120;
                 $scope.co2_1 = Math.round( $scope.co2_1 * 10 ) / 10;
                 $scope.co2_2 = response.data.city2.cars * 0.120;
@@ -335,7 +337,7 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
                     counterPm10 += sum;
                 }
             }
-
+            console.log("BROWN: "+brownPm10);
             for(var i=0; i<response.data.pm25.length; i++){
                 var data = response.data.pm25[i];
                 if(data._id !== null){
@@ -359,15 +361,16 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
                 carCounter ++;
             }
 
-            redPm10 = Math.round( (redPm10 / counterPm10) * 10 ) / 10 *100;
-            orangePm10 = Math.round( (orangePm10 / counterPm10) * 10 ) / 10 *100;
-            greenPm10 = Math.round( (greenPm10 / counterPm10) * 10 ) / 10 *100;
-            brownPm10 = Math.round( (brownPm10 / counterPm10) * 10 ) / 10 *100;
+            redPm10 = Math.round( (redPm10 / counterPm10) * 1000 ) / 10;
+            orangePm10 = Math.round( (orangePm10 / counterPm10) * 1000 ) / 10;
+            greenPm10 = Math.round( (greenPm10 / counterPm10) * 1000 ) / 10;
+            brownPm10 = Math.round( (brownPm10 / counterPm10) * 1000 ) / 10;
+            console.log("BROWN: "+brownPm10);
+            redPm25 = Math.round( (redPm25 / counterPm25) * 1000 ) / 10;
+            orangePm25 = Math.round( (orangePm25 / counterPm25) * 1000 ) / 10;
+            greenPm25 = Math.round( (greenPm25 / counterPm25) * 1000 ) / 10;
+            brownPm25 = Math.round( (brownPm25 / counterPm25) * 1000 ) / 10;
 
-            redPm25 = Math.round( (redPm25 / counterPm25) * 10 ) / 10 *100;
-            orangePm25 = Math.round( (orangePm25 / counterPm25) * 10 ) / 10 *100;
-            greenPm25 = Math.round( (greenPm25 / counterPm25) * 10 ) / 10 *100;
-            brownPm25 = Math.round( (brownPm25 / counterPm25) * 10 ) / 10 *100;
 
             $scope.dataStat = [brownPm10, redPm10, orangePm10, greenPm10];
             $scope.labelsData = ["Brown(%)", "Red(%)", "Orange(%)", "Green(%)"];
@@ -441,4 +444,57 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
 
         map.overlayMapTypes.insertAt(0,waqiMapOverlay);
     }
+
+    $scope.getFirstMap = function(selector, lat, lng, zoom){
+        $scope.city1Lat = lat;
+        $scope.city1Lng = lng;
+        if($scope.map2 != undefined){
+            zoom = $scope.map2.getZoom();
+        }
+        var map = new google.maps.Map(document.getElementById(selector), {
+            zoom: zoom,
+            center: {lat: lat ? lat : 34.2343, lng: lng ? lng: 21.2324}
+        });
+
+        $scope.map1 = map;
+        var trafficLayer = new google.maps.TrafficLayer();
+        trafficLayer.setMap(map);
+
+        google.maps.event.addListener($scope.map1, 'zoom_changed', function(){
+            console.log("ZOOM CHANGED 1");
+            var z = map.getZoom();
+            $scope.citiesZoom = z;
+            if($scope.map2 != undefined){
+               // $scope.map2.setZoom(z);
+                $scope.getSecondMap('map2', $scope.city2Lat, $scope.city2Lng, z);
+            }
+
+        });
+    };
+
+    $scope.getSecondMap = function(selector, lat, lng, zoom){
+        $scope.city2Lat = lat;
+        $scope.city2Lng = lng;
+        if($scope.map1 != undefined){
+            zoom = $scope.map1.getZoom();
+        }
+        var map = new google.maps.Map(document.getElementById(selector), {
+            zoom: zoom,
+            center: {lat: lat ? lat : 34.2343, lng: lng ? lng: 21.2324}
+        });
+
+        $scope.map2 = map;
+        var trafficLayer = new google.maps.TrafficLayer();
+        trafficLayer.setMap(map);
+
+        google.maps.event.addListener($scope.map2, 'zoom_changed', function(){
+            var z = map.getZoom();
+            $scope.citiesZoom = z;
+            if($scope.map1 != undefined){
+                //$scope.map1.setZoom(z);
+                $scope.getFirstMap('map1', $scope.city1Lat, $scope.city1Lng, z);
+            }
+
+        });
+    };
 }]);

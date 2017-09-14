@@ -154,10 +154,11 @@ exports.getMap = function (lat, lng, sensorId, i) {
 exports.calculatePixelToMeter = function(lat, zoom){
     return 156543.03392 * Math.cos(lat * Math.PI / 180) / Math.pow(2, zoom);
 };
-exports.getPixels = function (lat, lng) {
+exports.getPixels = function (lat, lng, zoom) {
     return new Promise(function (success, error) {
         var options = {};
-        var url = 'https://www.google.com/maps/@' + lat + ',' + lng + ',15z/data=!5m1!1e1?hl=en';
+        //var url = 'https://www.google.com/maps/@' + lat + ',' + lng + ',15z/data=!5m1!1e1?hl=en';
+        var url = 'https://www.google.com/maps/@' + lat + ',' + lng + ','+zoom+'z/data=!5m1!1e1?hl=en';
         console.log(url);
 
 

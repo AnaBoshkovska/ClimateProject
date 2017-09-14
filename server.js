@@ -42,9 +42,10 @@ app.get('/citiesMap', function(req, res, next){
     var lng1 = req.query.lng1;
     var lat2 = req.query.lat2;
     var lng2 = req.query.lng2;
+    var zoom = req.query.zoom;
 
-    mapService.getPixels(lat1,lng1, 1).then(function(success1){
-       mapService.getPixels(lat2, lng2, 2).then(function(success2){
+    mapService.getPixels(lat1,lng1,zoom, 1).then(function(success1){
+       mapService.getPixels(lat2, lng2,zoom, 2).then(function(success2){
            console.log(success2);
            res.json({city1: success1, city2: success2});
        }, function (error) {

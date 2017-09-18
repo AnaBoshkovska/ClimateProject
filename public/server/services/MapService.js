@@ -14,6 +14,7 @@ var fs = require('fs');
 var path = require('path');
 var rimraf = require('rimraf');
 var findRemove = require('find-remove');
+var pcorr = require( 'compute-pcorr' );
 
 exports.getMap = function (lat, lng, sensorId, i) {
 
@@ -210,8 +211,12 @@ exports.getPixels = function (lat, lng, zoom) {
 
 exports.getAllMaps = function(){
     return new Promise(function(success, error){
-        console.log("UNATRE");
         Map.aggregate([
+            {
+                "$match": {
+                    "created_at": { "$exists": true, "$ne": null }
+                }
+            },
             {
                 $group: {
                     _id: '$pm10',
@@ -229,6 +234,11 @@ exports.getAllMaps = function(){
             } else {
                 Map.aggregate([
                     {
+                        "$match": {
+                            "created_at": { "$exists": true, "$ne": null }
+                        }
+                    },
+                    {
                         $group: {
                             _id: '$pm25',
                             red: {$sum: '$red'},
@@ -244,6 +254,11 @@ exports.getAllMaps = function(){
                         error(err);
                     } else {
                         Map.aggregate([
+                            {
+                                "$match": {
+                                    "created_at": { "$exists": true, "$ne": null }
+                                }
+                            },
                             {
                                 $group: {
                                     _id: '$pm10',
@@ -261,17 +276,38 @@ exports.getAllMaps = function(){
                             } else {
                                 Map.aggregate([
                                     {
+                                        "$match": {
+                                            "created_at": { "$exists": true, "$ne": null }
+                                        }
+                                    },
+                                    {
                                         $group: { _id: {year : { $year : "$created_at" },
                                             month : { $month : "$created_at" },
-                                            day : { $dayOfMonth : "$created_at" },}, avgRed: {'$avg': '$red'} }
+                                            day : { $dayOfMonth : "$created_at" },},
+                                            avgRed: {'$avg': '$red'} }
                                     }
+
                                 ], function (err, result3) {
                                     if (err) {
                                         console.log(err);
                                         error(err);
                                     } else {
-                                        success({"pm10": result, "pm25": result2, 'cars': result3});
+                                        Map.find({'created_at': {$not : { $type : 10 }, $exists : true}, 'pm10': {$not : { $type : 10 }, $exists : true}, 'pm25': {$not : { $type : 10 }, $exists : true}}).select('pm10 pm25 red brown').exec(function (err, result4) {
+                                            if(err) error(err);
+                                            var pm10 = [];
+                                            var pm25 = [];
+                                            var red = [];
+                                            var brown = [];
+                                            result4.forEach(function (item) {
+                                                pm10.push(item.pm10);
+                                                pm25.push(item.pm25);
+                                                red.push(item.red);
+                                                brown.push(item.brown);
+                                            });
 
+                                            var mat = pcorr( pm10, pm10, red, pm25 );
+                                            success({"pm10": result, "pm25": result2, 'cars': result3, 'cor': mat});
+                                        });
                                     }
                                 });
                             }

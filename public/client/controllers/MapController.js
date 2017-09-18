@@ -242,9 +242,9 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
             $scope.airCity1 = response.data.city1.data;
             $scope.airCity2 = response.data.city2.data;
             $http.get('/citiesMap', {params: {lat1: $scope.city1.lat, lng1: $scope.city1.lon, lat2: $scope.city2.lat, lng2: $scope.city2.lon, zoom: $scope.citiesZoom}}).then(function(response){
-                $scope.co2_1 = response.data.city1.cars * 0.120;
+                $scope.co2_1 = response.data.city1.cars * 0.133;
                 $scope.co2_1 = Math.round( $scope.co2_1 * 10 ) / 10;
-                $scope.co2_2 = response.data.city2.cars * 0.120;
+                $scope.co2_2 = response.data.city2.cars * 0.133;
                 $scope.co2_2 = Math.round( $scope.co2_2 * 10 ) / 10;
                 $scope.aqi1 = $scope.airCity1.aqi;
                 $scope.aqi2 = $scope.airCity2.aqi;
@@ -389,9 +389,18 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
             var area = (carsRed/carCounter)*meters;
             var car = 5.25;
             $scope.numberOfCars = parseInt(area/car);
-            $scope.CO2 = $scope.numberOfCars * 0.120;
+            $scope.CO2 = $scope.numberOfCars * 0.133;
             $scope.CO2 = Math.round( $scope.CO2 * 10 ) / 10;
 
+            $scope.mat = response.data.cor;
+            for(var i = 0; i<$scope.mat.length; i++){
+                for(var j = 0; j<$scope.mat[i].length; j++){
+
+                    var elem = Math.round($scope.mat[i][j] * 100)/100;
+                    $scope.mat[i][j] = {e: elem};
+
+                }
+            }
             $scope.scrollToDiv();
             $scope.showAqiMap();
         }, function(error){

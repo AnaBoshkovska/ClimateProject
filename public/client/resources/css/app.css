@@ -175,3 +175,30 @@ body {
     color : rgb(187, 187, 187);
     background-color: rgba(230, 230, 229, 0.96);
 }
+#vertical-2 thead,#vertical-2 tbody{
+    display:inline-block;
+}
+table {
+    width: 100%;
+}
+
+th {
+    height: 50px;
+    width: 70px;
+    vertical-align: bottom;
+}
+td {
+    height: 50px;
+    width: 70px;
+    vertical-align: top;
+}
+th {
+    text-align: right;
+}
+.top {
+    text-align: right !important;
+
+}
+td {
+    text-align: right;
+}

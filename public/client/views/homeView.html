@@ -269,20 +269,19 @@
         <md-tab label="STATISTICS" md-active="statisticActive">
             <md-content class="md-padding" layout-align="center start">
                 <div layout="row" layout-align="strech">
-                    <md-card md-theme-watch flex="50" layout="column">
+                    <md-card md-theme-watch flex="50">
                         <md-card-title>
                             <md-card-title-text>
                                 <span class="md-headline">Traffic intensity</span>
                                 <span class="md-subhead">Average number of traffic delays based on data collected through the time for the city of Skopje, expressed in percents.
                                 Traffic details are collected with the help of Google Maps Traffic Layer and are represented with the corresponding color.
                                 You can see the Legend below in order to see the meaning of each color.
-
                                 </span>
                             </md-card-title-text>
                         </md-card-title>
-                        <md-card-content layout-align="center center">
-                            <div layout="column" layout-align="center center">
-                                <div layout="row" class="md-title">Legend</div>
+                        <md-card-content layout="column" layout-align="center center">
+
+                                <span layout="row" class="md-title">Legend</span>
                                 <div layout="row" layout-align="start end ">
                                     <md-fab-speed-dial md-direction="up" md-open="isOpenBrown" flex="25"
                                                        class="md-scale" ng-class="{ 'md-hover-full': hoverBrown }"
@@ -338,10 +337,10 @@
                                         </md-fab-actions>
                                     </md-fab-speed-dial>
                                 </div>
-                            </div>
-                            <canvas id="doughnutStat" class="chart chart-doughnut"
+                            <canvas flex="100" id="doughnutStat" class="chart chart-doughnut"
                                     chart-data="dataStat" chart-labels="labelsData" chart-colors="colors">
                             </canvas>
+
                         </md-card-content>
                     </md-card>
                     <md-card md-theme-watch flex="50">
@@ -411,7 +410,7 @@
                                 </span>
                             </md-card-title-text>
                         </md-card-title>
-                        <md-card-content >
+                        <md-card-content layout-align="center center">
                             <div layout="row" layout-align="center center">
                                 <table id="vertical-2" layout-align="center center ">
 

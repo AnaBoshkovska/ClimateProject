@@ -4,9 +4,9 @@ app.config(function($routeProvider, $mdIconProvider) {
 
     // Declaration of the default route if neither of the controllers
     // is supporting the request path
-    $routeProvider.when('/visualization', {
-        controller: 'VisualizationController',
-        templateUrl: '../views/statistics.html'
+    $routeProvider.when('/', {
+        controller: 'HomeController',
+        templateUrl: '../views/homeView.html'
     }).
     otherwise({ redirectTo: '/'});
     $mdIconProvider.fontSet('md', 'material-icons');

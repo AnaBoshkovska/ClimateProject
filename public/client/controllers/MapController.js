@@ -7,7 +7,6 @@ app.config(['$routeProvider',function($routeProvider){
 }])
 
 app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeout', function($scope, mapService, $http, $q, $timeout){
-    //$scope.getTrafficLayer = mapService.getTrafficLayer("map");
     $scope.selectedTab =0;
     $scope.visible = false;
     $scope.statisticActive = false;
@@ -103,7 +102,7 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
            $scope.showData = true;
     });
     $scope.$watch('selectedTab', function (newVal, oldVal) {
-        if(newVal === 2){
+        if(newVal === 1){
             $scope.getStatistics();
         }
     });
@@ -365,12 +364,6 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
             orangePm10 = Math.round( (orangePm10 / counterPm10) * 1000 ) / 10;
             greenPm10 = Math.round( (greenPm10 / counterPm10) * 1000 ) / 10;
             brownPm10 = Math.round( (brownPm10 / counterPm10) * 1000 ) / 10;
-            console.log("BROWN: "+brownPm10);
-            redPm25 = Math.round( (redPm25 / counterPm25) * 1000 ) / 10;
-            orangePm25 = Math.round( (orangePm25 / counterPm25) * 1000 ) / 10;
-            greenPm25 = Math.round( (greenPm25 / counterPm25) * 1000 ) / 10;
-            brownPm25 = Math.round( (brownPm25 / counterPm25) * 1000 ) / 10;
-
 
             $scope.dataStat = [brownPm10, redPm10, orangePm10, greenPm10];
             $scope.labelsData = ["Brown(%)", "Red(%)", "Orange(%)", "Green(%)"];
@@ -382,8 +375,6 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
             $scope.labelsPm25 = labelsPm25;
             $scope.colors = ["#C00000","#FF0000","#FF9F00","#00B420",];
             $scope.colorsStat = ["#00B420", "#FF0000"];
-            //$scope.labelsSensorStat = ["Temperature", "Humidity", "Noise", "PM10", "PM25"];
-            //$scope.dataSensorStat = [[red/counter/100, green/counter/100, orange/counter/100, brown/counter/100],[temp/counter, humidity/counter, noise/counter, pm10/counter, pm25/counter]];
             var lat = 41.99646;
             var meters = 156543.03392 * Math.cos(lat * Math.PI / 180) / Math.pow(2, 15);
             var area = (carsRed/carCounter)*meters;

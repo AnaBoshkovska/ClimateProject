@@ -1,0 +1,16 @@
+{
+  "name": "y",
+  "description": "",
+  "main": "server.js",
+  "authors": [
+    "LjubicaKoceva <ljubicakoceva94@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/AnaBoshkovska/ClimateProject",
+  "install": {
+    "path": "/public/client"
+  },
+  "dependencies": {
+    "countup-angularjs-directive": "*"
+  }
+}

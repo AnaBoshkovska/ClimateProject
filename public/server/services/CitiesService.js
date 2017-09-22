@@ -10,7 +10,19 @@ exports.getCities = function(){
 };
 
 exports.getCity = function(name){
-    var regex="^" + name + "[A-Za-z]*";
+    var parts = name.split(" ");
+    var capitalized = [];
+    parts.forEach(function(namepart){
+        capitalized.push(namepart.charAt(0).toUpperCase() + namepart.slice(1).toLowerCase());
+    })
+    var fullName = "";
+    for(var i =0; i<capitalized.length; i++){
+        fullName += capitalized[i];
+        if(i !== capitalized.length - 1)
+            fullName+=" ";
+    }
+    var regex="^" + fullName + "[A-Za-z]*";
+    console.log(regex);
     regex = new RegExp(regex);
     return cities.filter(city=> {
         return city.name.match(regex);

@@ -284,7 +284,7 @@ exports.getAllMaps = function(){
                                         $group: { _id: {year : { $year : "$created_at" },
                                             month : { $month : "$created_at" },
                                             day : { $dayOfMonth : "$created_at" },},
-                                            avgRed: {'$avg': '$red'} }
+                                            avgRed: {'$avg': '$brown'} }
                                     }
 
                                 ], function (err, result3) {

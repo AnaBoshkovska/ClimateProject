@@ -142,7 +142,8 @@
                                      md-items="item in querySearch(searchText1)"
                                      md-item-text="item.name + ',' + item.country"
                                      md-require-match
-                                     md-floating-label="City 1">
+                                     md-floating-label="City 1"
+                                     md-dropdown-position="bottom">
                         <md-item-template>
                             <span md-highlight-text="searchText">{{item.name + ',' + item.country}}</span>
                         </md-item-template>
@@ -152,6 +153,12 @@
                             <div ng-message="minlength">Your entry is not long enough.</div>
                         </div>
                     </md-autocomplete>
+                    <div layout="column" layout-align="center center">
+                        <md-progress-circular md-mode="indeterminate" ng-show="showProgress"></md-progress-circular>
+                        <md-button class="md-raised md-primary" ng-show="!showProgress" ng-click="compareCities()">
+                            Compare
+                        </md-button>
+                    </div>
                     <md-autocomplete flex required
                                      md-input-name="autocompleteField"
                                      md-input-minlength="3"
@@ -162,7 +169,8 @@
                                      md-items="item in querySearch(searchText2)"
                                      md-item-text="item.name + ',' + item.country"
                                      md-require-match
-                                     md-floating-label="City 2">
+                                     md-floating-label="City 2"
+                                     md-dropdown-position="bottom">
                         <md-item-template>
                             <span md-highlight-text="searchText">{{item.name + ',' + item.country}}</span>
                         </md-item-template>
@@ -173,9 +181,11 @@
                         </div>
                     </md-autocomplete>
                 </div>
-                <div layout="row" layout-align="center center">
+                <div layout="row" layout-align="center center" flex="100">
                     <div layout="column">
-                        <div id="map1" style="width:700px; height:500px"></div>
+
+                            <div id="map1" style="width:600px; height:500px; margin-right: 5px"></div>
+
                         <div layout-align="center center" layout="row" ng-show="showGraphs">
                          <!--   <div layout="column" layout-align="center center" class="progress-wrapper">
                                 <round-progress
@@ -215,14 +225,10 @@
                             </div>
                         </div>
                     </div>
-                    <div layout="column" layout-align="center center">
-                        <md-progress-circular md-mode="indeterminate" ng-show="showProgress"></md-progress-circular>
-                        <md-button class="md-raised md-primary" ng-show="!showProgress" ng-click="compareCities()">
-                            Compare
-                        </md-button>
-                    </div>
                     <div layout="column">
-                        <div id="map2" style="width:700px; height:500px"></div>
+
+                            <div id="map2" style="width:600px; height:500px; margin-left:5px"></div>
+
                         <div layout-align="center center" layout="row" ng-show="showGraphs">
                           <!--  <div layout="column" layout-align="center center" class="progress-wrapper">
                                 <round-progress

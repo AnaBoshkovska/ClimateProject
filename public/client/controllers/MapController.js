@@ -130,6 +130,38 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
         else return [];
     }
 
+
+    $scope.showSensors = function(){
+        $http.get('sensors').then(function(response){
+            $scope.positions = [];
+            $scope.sensors = response.data;
+
+            for(var i=0; i<response.data.length; i++){
+                var sensor = response.data[i];
+                if(sensor.position != null && sensor.status == 'ACTIVE'){
+                    var coors = sensor.position.split(',');
+                    var lat = parseFloat(coors[0]);
+                    var lng = parseFloat(coors[1]);
+                    $scope.positions.push({
+                        lat:lat,
+                        lng:lng,
+                        sensorId: sensor.sensorId
+                    });
+
+                    var selector = "mapa";
+                    $scope.map = {
+                        center: [lat, lng]
+                    };
+
+                }
+
+            }
+
+        }, function(error){
+           console.log(error);
+        });
+    }
+
     $scope.getData = function(){
         $scope.showProgress = true;
       $http.get('/sensors').then(function(response){
@@ -319,6 +351,8 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
         $scope.showProgressActive = true;
         $http.get('/allMaps').then(function(response){
             $scope.showProgressActive = false;
+
+            $scope.showSensors();
             var redPm10 = 0;
             var orangePm10 = 0;
             var greenPm10 = 0;
@@ -342,14 +376,56 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
 
             var carsRed = 0;
             var carCounter = 0;
+            var listPM10 = [];
+            var listRed = [];
+            var listBrown = [];
+
+            var listPM25 = [];
+            var sumPm25 = 0;
+
+            var sumPm10 = 0;
+            var sumRed = 0;
+            var sumBrown = 0;
+            for(var i=0; i<response.data.pm10.length; i++){
+                var data = response.data.pm10[i];
+                listPM10.push(data._id);
+                listRed.push(data.red);
+                listBrown.push(data.brown);
+                sumPm10+=data._id;
+                sumRed+=data.red;
+                sumBrown+=data.brown;
+
+            }
+            var minPm10 = Math.min.apply(Math, listPM10);
+            var maxPm10 = Math.max.apply(Math, listPM10);
+
+
+            var avgPm10 = sumPm10 / response.data.pm10.length;
+
+            var minRed = Math.min.apply(Math, listRed);
+            var maxRed = Math.max.apply(Math, listRed);
+            var avgRed = sumRed / response.data.pm10.length;
+
+            var minBrown = Math.min.apply(Math, listBrown);
+            var maxBrown = Math.max.apply(Math, listBrown);
+
+            var avgBrown = sumBrown / response.data.pm10.length;
+
             for(var i=0; i<response.data.pm10.length; i++){
                 var data = response.data.pm10[i];
                 if(data._id !== null){
                     var sum = data.red + data.orange + data.brown + data.green;
                     var red = Math.round( (data.red / sum) * 10 ) / 10 *100;
+                    var brown = Math.round( (data.brown / sum) * 10 ) / 10 *100;
+                    var normalizedPm10 = (data._id - minPm10) / (maxPm10 - minPm10);
+                    var normalizedRed = (data.red - minRed) / (maxRed - minRed);
+                    var normalizedBrown = (data.brown - minBrown) / (maxBrown - minBrown);
                     labelsPm10.push(data._id);
-                    dataPixelsPm10.push(red);
-                    dataPm10.push(data._id);
+                    //dataPixelsPm10.push(red);
+                    //dataPm10.push(data._id);
+
+                    dataPixelsPm10.push(normalizedRed);
+                    dataPm10.push(normalizedPm10);
                     redPm10 += data.red;
                     orangePm10 += data.orange;
                     greenPm10 += data.green;
@@ -358,14 +434,46 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
                 }
             }
             console.log("BROWN: "+brownPm10);
+
+
+            for(var i=0; i<response.data.pm25.length; i++){
+                var data = response.data.pm25[i];
+                listPM25.push(data._id);
+                listRed.push(data.red);
+                listBrown.push(data.brown);
+                sumPm25+=data._id;
+                sumRed+=data.red;
+                sumBrown+=data.brown;
+
+            }
+            var minPm25 = Math.min.apply(Math, listPM25);
+            var maxPm25 = Math.max.apply(Math, listPM25);
+
+
+            var avgPm25 = sumPm25 / response.data.pm25.length;
+
+            var minRed = Math.min.apply(Math, listRed);
+            var maxRed = Math.max.apply(Math, listRed);
+            var avgRed = sumRed / response.data.pm25.length;
+
+            var minBrown = Math.min.apply(Math, listBrown);
+            var maxBrown = Math.max.apply(Math, listBrown);
+
+            var avgBrown = sumBrown / response.data.pm10.length;
             for(var i=0; i<response.data.pm25.length; i++){
                 var data = response.data.pm25[i];
                 if(data._id !== null){
                     var sum = data.red + data.orange + data.brown + data.green;
                     var red = Math.round( (data.red / sum) * 10 ) / 10 *100;
+                    var brown = Math.round( (data.brown / sum) * 10 ) / 10 *100;
+                    var normalizedPm25 = (data._id - minPm25) / (maxPm25 - minPm25);
+                    var normalizedRed = (data.red - minRed) / (maxRed - minRed);
+                    var normalizedBrown = (data.brown - minBrown) / (maxBrown - minBrown);
                     labelsPm25.push(data._id);
-                    dataPixelsPm25.push(red);
-                    dataPm25.push(data._id);
+                    //dataPixelsPm25.push(red);
+                    //dataPm25.push(data._id);
+                    dataPixelsPm25.push(normalizedRed);
+                    dataPm25.push(normalizedPm25)
                     redPm25 += data.red;
                     orangePm25 += data.orange;
                     greenPm25 += data.green;

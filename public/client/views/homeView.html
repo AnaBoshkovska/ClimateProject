@@ -274,6 +274,29 @@
         </md-tab>
         <md-tab label="STATISTICS" md-active="statisticActive">
             <md-content class="md-padding" layout-align="center start">
+
+                <div layout="row" flex="100" layout-align="center center">
+                    <md-card md-theme-watch flex="100">
+                        <md-card-title>
+                            <md-card-title-text>
+                                <span class="md-headline">Skopje Pulse Sensors</span>
+                                <span class="md-subhead">Shows the locations of the sensors used for measuring air quality.</span>
+                            </md-card-title-text>
+                        </md-card-title>
+                        <md-card-content>
+
+                            <div flex="100" id='mapa'  style='height:380px; width:100%' >
+                                <ng-map zoom="13" center="[41.99646, 21.43141]" style="height: 100%; width: 100%;">
+                                    <traffic-layer>
+                                        <marker ng-repeat="pos in positions"
+                                                position="{{pos.lat}},{{pos.lng}}"></marker>
+                                    </traffic-layer>
+                                </ng-map>
+                            </div>
+                        </md-card-content>
+                    </md-card>
+                </div>
+
                 <div layout="row" layout-align="strech">
                     <md-card md-theme-watch flex="50">
                         <md-card-title>

@@ -29,6 +29,7 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
         center: [34.04924594193164, -118.24104309082031]
     };
 
+
     $scope.getTrafficLayer = function(){
         console.log("Mapa");
         var lat = 34.2343;
@@ -100,6 +101,8 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
        if($scope.city1 !== null && $scope.city2 !== null)
            $scope.showData = true;
     });
+
+
     $scope.$watch('selectedTab', function (newVal, oldVal) {
         if(newVal === 1){
             $scope.getStatistics();
@@ -111,6 +114,7 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
             $scope.lat = newVal.lat;
             $scope.lng = newVal.lon;
             $scope.getSecondMap("map2", $scope.lat, $scope.lng, 13);
+            $scope.getFirstMap("map1", 41.99646, 21.43141, 13);
             $scope.scrollToMaps();
         }
         if($scope.city1 !== null && $scope.city2 !== null)
@@ -273,15 +277,16 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
 
     $scope.compareCities = function(){
         $scope.showProgress = true;
-        $http.get('/citiesData', {params: {name1: $scope.city1.name.replace(/\s/g,''), name2: $scope.city2.name.replace(/\s/g,'')}}).then(function(response){
+        $scope.city1Name = "Skopje";
+        $http.get('/citiesData', {params: {name1: $scope.city1Name, name2: $scope.city2.name.replace(/\s/g,'')}}).then(function(response){
             $scope.airCity1 = response.data.city1.data;
             $scope.airCity2 = response.data.city2.data;
             var co2City1;
             var co2City2;
-            $http.get('/citiesMap', {params: {lat1: $scope.city1.lat, lng1: $scope.city1.lon, lat2: $scope.city2.lat, lng2: $scope.city2.lon, zoom: $scope.citiesZoom}}).then(function(response){
+            $http.get('/citiesMap', {params: {lat1:  41.99646, lng1: 21.43141, lat2: $scope.city2.lat, lng2: $scope.city2.lon, zoom: $scope.citiesZoom}}).then(function(response){
                 $http.get('../resources/data/country-co2.json').then(function(success){
                     success.data.forEach(function (country) {
-                        if(country.countryCode === $scope.city1.country)
+                        if(country.countryCode === "MK")
                             co2City1 = country.co2;
                         if(country.countryCode === $scope.city2.country)
                             co2City2 = country.co2;
@@ -296,6 +301,56 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
                     $scope.co2_2 = Math.round( $scope.co2_2 * 10 ) / 10;
                     $scope.aqi1 = $scope.airCity1.aqi;
                     $scope.aqi2 = $scope.airCity2.aqi;
+
+                    var brownCity1 = response.data.city1.brown;
+                    var redCity1 = response.data.city1.red;
+                    var orangeCity1 = response.data.city1.orange;
+                    var greenCity1 = response.data.city1.green;
+                    var counterCity1 = brownCity1+redCity1+orangeCity1+greenCity1;
+
+                    redCity1 = Math.round( (brownCity1 / counterCity1) * 1000 ) / 10;
+                    orangeCity1 = Math.round( (orangeCity1 / counterCity1) * 1000 ) / 10;
+                    greenCity1 = Math.round( (greenCity1 / counterCity1) * 1000 ) / 10;
+                    brownCity1 = Math.round( (brownCity1 / counterCity1) * 1000 ) / 10;
+
+                    $scope.city1Colors = [brownCity1, redCity1, orangeCity1, greenCity1];
+                    $scope.city1Labels = ["Brown(%)", "Red(%)", "Orange(%)", "Green(%)"];
+
+                    var brownCity2 = response.data.city2.brown;
+                    var redCity2 = response.data.city2.red;
+                    var orangeCity2 = response.data.city2.orange;
+                    var greenCity2 = response.data.city2.green;
+                    var counterCity2 = brownCity2+redCity2+orangeCity2+greenCity2;
+
+                    redCity2 = Math.round( (brownCity2 / counterCity2) * 1000 ) / 10;
+                    orangeCity2 = Math.round( (orangeCity2 / counterCity2) * 1000 ) / 10;
+                    greenCity2 = Math.round( (greenCity2 / counterCity2) * 1000 ) / 10;
+                    brownCity2 = Math.round( (brownCity2 / counterCity2) * 1000 ) / 10;
+
+                    $scope.city2Colors = [brownCity2, redCity2, orangeCity2, greenCity2];
+                    $scope.city2Labels = ["Brown(%)", "Red(%)", "Orange(%)", "Green(%)"];
+
+                    var metersCity1 = 156543.03392 * Math.cos(41.99646 * Math.PI / 180) / Math.pow(2, $scope.citiesZoom);
+                    var metersCity2 = 156543.03392 * Math.cos($scope.city2.lat * Math.PI / 180) / Math.pow(2, $scope.citiesZoom);
+
+                    //number of cars for each color: city1
+                    $scope.orangeCarsCity1 = Math.floor((metersCity1*response.data.city1.orange)/15);
+                    $scope.redCarsCity1 = Math.floor((metersCity1*response.data.city1.red)/10);
+                    $scope.brownCarsCity1 = Math.floor((metersCity1*response.data.city1.brown)/5);
+
+
+
+                    //number of cars for each color: city2
+                    $scope.orangeCarsCity2 = Math.floor((metersCity2*response.data.city2.orange)/15);
+                    $scope.redCarsCity2 = Math.floor((metersCity2*response.data.city2.red)/10);
+                    $scope.brownCarsCity2 = Math.floor((metersCity2*response.data.city2.brown)/5);
+
+                    $scope.cityCarsLabels = ['Cars orange', 'Cars red', 'Cars brown'];
+                    $scope.city1CarsData = [$scope.orangeCarsCity1, $scope.redCarsCity1, $scope.brownCarsCity1];
+                    $scope.city2CarsData = [$scope.orangeCarsCity2, $scope.redCarsCity2, $scope.brownCarsCity2];
+                    $scope.carColors = ["#FF9F00","#FF0000","#C00000"];
+
+                    $scope.colors = ["#C00000","#FF0000","#FF9F00","#00B420",];
                     var aqi1Color;
                     var aqi1 = $scope.aqi1;
                     if(aqi1<51)
@@ -626,4 +681,5 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
 
         });
     };
+
 }]);

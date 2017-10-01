@@ -327,6 +327,7 @@ app.controller('HomeController', ['$scope', 'mapService', '$http', '$q', '$timeo
                     greenCity2 = Math.round( (greenCity2 / counterCity2) * 1000 ) / 10;
                     brownCity2 = Math.round( (brownCity2 / counterCity2) * 1000 ) / 10;
 
+
                     $scope.city2Colors = [brownCity2, redCity2, orangeCity2, greenCity2];
                     $scope.city2Labels = ["Brown(%)", "Red(%)", "Orange(%)", "Green(%)"];
 

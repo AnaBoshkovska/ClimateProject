@@ -178,14 +178,49 @@ exports.getPixels = function (lat, lng, zoom) {
                     for (var j = 0; j < image.bitmap.height; j++) {
                         var hex = image.getPixelColor(i, j);
                         var rgba = Jimp.intToRGBA(hex);
-                        if (rgba.r === 132 && rgba.g === 202 && rgba.b === 80)
+                        var r = rgba.r;
+                        var g = rgba.g;
+                        var b = rgba.b;
+
+                        r /= 255;
+                        g /= 255;
+                        b /= 255;
+                        var max = Math.max(r, g, b);
+                        var min = Math.min(r, g, b);
+                        var h = (max + min) / 2;
+                        var s = (max + min) / 2;
+                        var l = (max + min) / 2;
+
+                        if(max == min){
+                            h = s = 0; // achromatic
+                        }else{
+                            var d = max - min;
+                            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                            switch(max){
+                                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                                case g: h = (b - r) / d + 2; break;
+                                case b: h = (r - g) / d + 4; break;
+                            }
+                            h /= 6;
+                        }
+                        h=Math.round(h*100);
+                        s=Math.round(s*100);
+                        l=Math.round(l*100);
+                        if(h==0 && s>0){
+                            var dif = Math.abs(rgba.r - 158) + Math.abs(rgba.g - 25) + Math.abs(rgba.b - 25);
+                            if(dif<50){
+                                brown ++;
+                            }else{
+                                red++;
+                            }
+                        }
+                        else if(h==26){
                             green++;
-                        if (rgba.r > 200 && rgba.r < 256 && rgba.g > 60 && rgba.g < 150 && rgba.b > -1 &&rgba.b <60)
+                        }
+                        else if(h==9){
                             orange++;
-                        if (rgba.r === 230 && rgba.g === 0 && rgba.b === 0)
-                            red++;
-                        if (rgba.r === 158 && rgba.g === 19 && rgba.b === 19)
-                            brown++;
+                        }
+
                     }
                 }
                 var area = red*meters;
@@ -305,7 +340,8 @@ exports.getAllMaps = function(){
                                                 brown.push(item.brown);
                                             });
 
-                                            var mat = pcorr( pm10, pm10, red, pm25 );
+                                           // var mat = pcorr( pm10, pm10, red, pm25 );
+                                            var mat = pcorr(pm10, pm25, red, brown);
                                             success({"pm10": result, "pm25": result2, 'cars': result3, 'cor': mat});
                                         });
                                     }
